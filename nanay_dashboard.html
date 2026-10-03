@@ -87,6 +87,7 @@
             opacity: 0.9;
         }
 
+        /* 4 Main Tabs Navigation */
         .tabs {
             display: flex;
             gap: 8px;
@@ -99,10 +100,10 @@
             background: white;
             border: 2px solid #9ca3af;
             color: #4b5563;
-            padding: 8px 12px;
+            padding: 10px 16px;
             border-radius: 30px;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -156,12 +157,10 @@
             display: block;
         }
 
-        /* Distinct Color Themes per Tab to Avoid Confusion */
-        #productsTab { border-top: 8px solid #d97706; background-color: #fffdf9; }
-        #salesTab { border-top: 8px solid #059669; background-color: #f3faf7; }
+        /* Distinct Color Themes per Tab */
+        #transactTab { border-top: 8px solid #059669; background-color: #f3faf7; }
         #reportsTab { border-top: 8px solid #0284c7; background-color: #f0f9ff; }
-        #utangTab { border-top: 8px solid #dc2626; background-color: #fef2f2; }
-        #lossTab { border-top: 8px solid #d97706; background-color: #fffbeb; }
+        #productsTab { border-top: 8px solid #d97706; background-color: #fffdf9; }
         #settingsTab { border-top: 8px solid #4b5563; background-color: #f9fafb; }
 
         h2 {
@@ -170,12 +169,64 @@
             border-bottom: 2px solid rgba(0,0,0,0.06);
             padding-bottom: 6px;
         }
-        #productsTab h2 { color: #b45309; }
-        #salesTab h2 { color: #065f46; }
+        #transactTab h2 { color: #065f46; }
         #reportsTab h2 { color: #0369a1; }
-        #utangTab h2 { color: #991b1b; }
-        #lossTab h2 { color: #c2410c; }
+        #productsTab h2 { color: #b45309; }
         #settingsTab h2 { color: #374151; }
+
+        /* Interactive Transact Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        @media(min-width: 600px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            body { padding: 20px; }
+            header { padding: 25px; }
+            header h1 { font-size: 1.8rem; }
+            .panel { padding: 25px; }
+        }
+
+        .menu-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            border-color: var(--accent);
+        }
+
+        .menu-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .menu-card p {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .sub-view {
+            display: none;
+        }
+
+        .back-menu-bar {
+            margin-bottom: 15px;
+        }
 
         .form-grid {
             display: grid;
@@ -188,10 +239,6 @@
             .form-grid {
                 grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             }
-            body { padding: 20px; }
-            header { padding: 25px; }
-            header h1 { font-size: 1.8rem; }
-            .panel { padding: 25px; }
         }
 
         .form-group {
@@ -270,11 +317,9 @@
             white-space: nowrap;
         }
 
-        #productsTab th { background: #fef3c7; color: #b45309; }
-        #salesTab th { background: #d1fae5; color: #065f46; }
+        #transactTab th { background: #d1fae5; color: #065f46; }
         #reportsTab th { background: #e0f2fe; color: #0369a1; }
-        #utangTab th { background: #fee2e2; color: #991b1b; }
-        #lossTab th { background: #ffedd5; color: #c2410c; }
+        #productsTab th { background: #fef3c7; color: #b45309; }
 
         .badge {
             padding: 4px 8px;
@@ -310,7 +355,6 @@
         }
         .summary-card.sales { border-left-color: var(--accent); }
         .summary-card.utang { border-left-color: var(--danger); }
-        .summary-card.loss { border-left-color: #d97706; }
         .summary-card.reports { border-left-color: #0284c7; }
 
         .summary-card h3 { font-size: 0.85rem; color: #6b7280; margin-bottom: 5px; }
@@ -329,6 +373,38 @@
             margin-top: 10px;
             font-weight: bold;
             display: none;
+        }
+
+        /* Accordion for Loss (Optional View) */
+        .loss-accordion {
+            margin-top: 30px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+            overflow: hidden;
+        }
+
+        .loss-accordion-header {
+            background: #f9fafb;
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+
+        .loss-accordion-header:hover {
+            background: #f3f4f6;
+        }
+
+        .loss-accordion-content {
+            display: none;
+            padding: 15px;
+            border-top: 1px solid #e5e7eb;
+            background: #fff;
         }
 
         /* MODAL STYLES */
@@ -399,21 +475,252 @@
     <!-- ACTUAL DASHBOARD CONTENT -->
     <div id="dashboardContent">
         <header>
-            <h1>🔐 Pribadong Dashboard ni Chai</h1>
-            <p>Dito ina-update ang mga paninda, benta, pautang, ulat, at inventory loss.</p>
+            <h1>🔐 Pribadong Dashboard ni Mama</h1>
+            <p>Maligayang pagdating! Piliin ang seksyon sa ibaba.</p>
         </header>
 
+        <!-- 4 MAIN TABS -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('productsTab', event)">📦 1. Paninda</button>
-            <button class="tab-btn" onclick="switchTab('salesTab', event)">💰 2. Benta</button>
-            <button class="tab-btn" onclick="switchTab('reportsTab', event)">📊 3. Ulat / Sales Total</button>
-            <button class="tab-btn" onclick="switchTab('utangTab', event)">📝 4. Pautang</button>
-            <button class="tab-btn" onclick="switchTab('lossTab', event)">🍳 5. Loss</button>
-            <button class="tab-btn" onclick="switchTab('settingsTab', event)">⚙️ 6. Settings</button>
+            <button class="tab-btn active" onclick="switchTab('transactTab', event)">🛒 1. Transaksyon (Benta / Utang)</button>
+            <button class="tab-btn" onclick="switchTab('reportsTab', event)">📊 2. Ulat at Benta</button>
+            <button class="tab-btn" onclick="switchTab('productsTab', event)">📦 3. Paninda</button>
+            <button class="tab-btn" onclick="switchTab('settingsTab', event)">⚙️ 4. Settings</button>
         </div>
 
-        <!-- TAB 1: PRODUCTS -->
-        <div id="productsTab" class="panel active">
+        <!-- TAB 1: INTERACTIVE TRANSACTIONS (BENTA, PAUTANG, LOSS) -->
+        <div id="transactTab" class="panel active">
+            
+            <!-- MAIN INTERACTIVE MENU -->
+            <div id="transactMainMenu">
+                <h2>📋 Pumili ng Uri ng Transaksyon</h2>
+                <p style="font-size:0.9rem; color:#6b7280; margin-bottom:20px;">I-click ang nais mong gawin o i-update:</p>
+                
+                <div class="menu-grid">
+                    <div class="menu-card" onclick="openSubView('bentaView')">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">💰</div>
+                        <h3>Benta</h3>
+                        <p>Mag-encode ng bagong benta at tingnan ang listahan.</p>
+                    </div>
+                    <div class="menu-card" onclick="openSubView('utangView')">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">📝</div>
+                        <h3>Pautang</h3>
+                        <p>Tingnan ang listahan ng mga may utang at mag-mark ng bayad.</p>
+                    </div>
+                    <div class="menu-card" onclick="openSubView('lossView')">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">🍳</div>
+                        <h3>Loss / Kain Pamilya</h3>
+                        <p>Itala ang ulam ng pamilya o nasirang paninda.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 1: BENTA -->
+            <div id="bentaView" class="sub-view">
+                <div class="back-menu-bar">
+                    <button class="btn btn-secondary" onclick="backToMainMenu()">⬅️ Bumalik sa Main Menu</button>
+                </div>
+                <h2>💰 Pag-encode at Listahan ng Benta</h2>
+                <div class="form-grid" style="grid-template-columns: 1fr; background: #ecfdf5; padding: 15px; border-radius: 10px; border: 1px dashed var(--accent); margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Piliin ang Paninda <span class="required-star">*</span></label>
+                        <select id="salesProdSelect">
+                            <option value="" disabled selected>-- Pumili ng Paninda --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Qty na Binenta <span class="required-star">*</span></label>
+                        <input type="number" id="salesQty" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Pangalan ng Buyer / Nangutang <span class="required-star">*</span></label>
+                        <input type="text" id="salesBuyer" placeholder="Ilagay ang pangalan">
+                    </div>
+                    <div class="form-group">
+                        <label>Mode of Payment <span class="required-star">*</span></label>
+                        <select id="salesPaymentMode">
+                            <option value="" disabled selected>-- Pumili ng Mode --</option>
+                            <option value="Cash/Digital">💵 Cash / Digital</option>
+                            <option value="Pautang">📝 Pautang (Utang)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <label style="display:none">&nbsp;</label>
+                        <button class="btn" style="background: var(--accent);" onclick="recordSale()">💰 Itala ang Transaksyon</button>
+                    </div>
+                </div>
+
+                <h2>📋 Listahan ng mga Na-encode na Benta</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Petsa / Oras</th>
+                                <th>Paninda</th>
+                                <th>Qty</th>
+                                <th>Buyer</th>
+                                <th>Uri / Halaga</th>
+                                <th>Aksyon</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 2: UTANG -->
+            <div id="utangView" class="sub-view">
+                <div class="back-menu-bar">
+                    <button class="btn btn-secondary" onclick="backToMainMenu()">⬅️ Bumalik sa Main Menu</button>
+                </div>
+                <h2>📝 Listahan ng Pautang</h2>
+                <div class="summary-row" style="margin-bottom:15px;">
+                    <div class="summary-card utang">
+                        <h3>Kabuuang Utang na Di Pa Bayad</h3>
+                        <div class="value" id="totalUtangDisplay">₱0.00</div>
+                    </div>
+                </div>
+
+                <div class="sub-tabs">
+                    <button class="sub-tab-btn active" onclick="switchUtangSubTab('unpaidSubPanel', event)">🔴 Unpaid (May Utang Pa)</button>
+                    <button class="sub-tab-btn" onclick="switchUtangSubTab('paidSubPanel', event)">🟢 Paid (Bayad Na)</button>
+                </div>
+
+                <div id="unpaidSubPanel" class="sub-panel active">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Petsa</th>
+                                    <th>Nangutang</th>
+                                    <th>Detalye</th>
+                                    <th>Halaga</th>
+                                    <th>Aksyon</th>
+                                </tr>
+                            </thead>
+                            <tbody id="utangUnpaidTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="paidSubPanel" class="sub-panel">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Petsa</th>
+                                    <th>Nangutang</th>
+                                    <th>Detalye</th>
+                                    <th>Halaga</th>
+                                    <th>Katayuan</th>
+                                    <th>Aksyon</th>
+                                </tr>
+                            </thead>
+                            <tbody id="utangPaidTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 3: LOSS -->
+            <div id="lossView" class="sub-view">
+                <div class="back-menu-bar">
+                    <button class="btn btn-secondary" onclick="backToMainMenu()">⬅️ Bumalik sa Main Menu</button>
+                </div>
+                <h2>🍳 Kain Pamilya / Bigay / Loss</h2>
+                <div class="form-grid" style="background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px dashed #d97706; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Paninda <span class="required-star">*</span></label>
+                        <select id="lossProdSelect">
+                            <option value="" disabled selected>-- Pumili ng Paninda --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Qty <span class="required-star">*</span></label>
+                        <input type="number" id="lossQty" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Dahilan <span class="required-star">*</span></label>
+                        <select id="lossReason">
+                            <option value="" disabled selected>-- Pumili ng Dahilan --</option>
+                            <option value="Ulam ng Pamilya">🍲 Kain Ulam ng Pamilya</option>
+                            <option value="Bigay sa Kamag-anak/Kaibigan">🎁 Bigay sa Kamag-anak / Kaibigan</option>
+                            <option value="Nasira / Panis / Nabasag">⚠ Nasira / Panis / Nabasag</option>
+                            <option value="Bad Debt / Loss (Hindi na Bayaran / Takas)">❌ Bad Debt / Loss</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <label style="display:none">&nbsp;</label>
+                        <button class="btn btn-warning" onclick="recordLoss()">🍳 Itala ang Loss</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Petsa</th>
+                                <th>Paninda</th>
+                                <th>Qty</th>
+                                <th>Dahilan</th>
+                                <th>Halaga</th>
+                                <th>Aksyon</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lossTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: REPORTS & SALES TOTALS -->
+        <div id="reportsTab" class="panel">
+            <h2>📊 Buod at Ulat ng mga Benta</h2>
+            <p style="font-size: 0.9rem; color: #4b5563; margin-bottom: 20px;">Dito makikita ang kabuuang pondo mula sa cash, digital, at nakolektang bayad-utang.</p>
+            
+            <div class="summary-row">
+                <div class="summary-card reports" style="border-left-color: #0284c7;">
+                    <h3>Kabuuang Pangkalahatang Benta (Grand Total)</h3>
+                    <div class="value" id="totalSalesDisplay" style="color: #0284c7;">₱0.00</div>
+                </div>
+                <div class="summary-card" style="border-left-color: #059669;">
+                    <h3>Cash / Digital Direct Sales</h3>
+                    <div class="value" id="cashSalesDisplay" style="font-size: 1.1rem; color: #059669;">₱0.00</div>
+                </div>
+                <div class="summary-card" style="border-left-color: #d97706;">
+                    <h3>Nakolektang Utang (Paid)</h3>
+                    <div class="value" id="paidUtangSalesDisplay" style="font-size: 1.1rem; color: #d97706;">₱0.00</div>
+                </div>
+            </div>
+
+            <!-- OPTIONAL / ACCORDION FOR LOSS (ADDITIONAL INFO) -->
+            <div class="loss-accordion">
+                <div class="loss-accordion-header" onclick="toggleLossAccordion()">
+                    <span>🍳 Karagdagang Impormasyon: Total Loss / Kain Pamilya (Optional)</span>
+                    <span id="lossAccordionIcon">▼</span>
+                </div>
+                <div id="lossAccordionContent" class="loss-accordion-content">
+                    <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 10px;">Ito ay karagdagang ulat lamang para sa mga kinain o nasirang paninda.</p>
+                    <div style="font-weight: bold; margin-bottom: 10px;">Kabuuang Halaga ng Loss: <span id="totalLossDisplay" style="color: #d97706;">₱0.00</span></div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Petsa</th>
+                                    <th>Paninda</th>
+                                    <th>Qty</th>
+                                    <th>Dahilan</th>
+                                    <th>Halaga</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsLossTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PRODUCTS -->
+        <div id="productsTab" class="panel">
             <h2>📦 Magdagdag ng Bagong Paninda</h2>
             <div class="form-grid" style="margin-bottom: 25px; background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
                 <div class="form-group">
@@ -452,7 +759,7 @@
                             <th>Kategori</th>
                             <th>Presyo</th>
                             <th>Stock Qty</th>
-                            <th>Aksyon (Paninda)</th>
+                            <th>Aksyon</th>
                         </tr>
                     </thead>
                     <tbody id="productTableBody"></tbody>
@@ -460,181 +767,7 @@
             </div>
         </div>
 
-        <!-- TAB 2: SALES -->
-        <div id="salesTab" class="panel">
-            <h2>💰 Mag-encode ng Benta</h2>
-            <div class="form-grid" style="grid-template-columns: 1fr; background: #ecfdf5; padding: 15px; border-radius: 10px; border: 1px dashed var(--accent); margin-bottom: 20px;">
-                <div class="form-group">
-                    <label>Piliin ang Paninda <span class="required-star">*</span></label>
-                    <select id="salesProdSelect">
-                        <option value="" disabled selected>-- Pumili ng Paninda --</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Qty na Binenta <span class="required-star">*</span></label>
-                    <input type="number" id="salesQty" min="0">
-                </div>
-                <div class="form-group">
-                    <label>Pangalan ng Buyer / Nangutang <span class="required-star">*</span></label>
-                    <input type="text" id="salesBuyer" placeholder="Ilagay ang pangalan">
-                </div>
-                <div class="form-group">
-                    <label>Mode of Payment <span class="required-star">*</span></label>
-                    <select id="salesPaymentMode">
-                        <option value="" disabled selected>-- Pumili ng Mode --</option>
-                        <option value="Cash/Digital">💵 Cash / Digital</option>
-                        <option value="Pautang">📝 Pautang (Utang)</option>
-                    </select>
-                </div>
-                <div class="form-group" style="justify-content: flex-end;">
-                    <label style="display:none">&nbsp;</label>
-                    <button class="btn" style="background: var(--accent);" onclick="recordSale()">💰 Itala ang Transaksyon</button>
-                </div>
-            </div>
-
-            <h2>💰 Listahan ng mga Na-encode na Benta</h2>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Petsa / Oras</th>
-                            <th>Paninda</th>
-                            <th>Qty</th>
-                            <th>Buyer</th>
-                            <th>Uri / Halaga</th>
-                            <th>Aksyon (Benta)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salesTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TAB 3: REPORTS (TOTALS) -->
-        <div id="reportsTab" class="panel">
-            <h2>📊 Buod at Ulat ng mga Benta</h2>
-            <p style="font-size: 0.9rem; color: #4b5563; margin-bottom: 20px;">Dito makikita ang kabuuang pondo mula sa cash, digital, at nakolektang bayad-utang.</p>
-            
-            <div class="summary-row">
-                <div class="summary-card reports" style="border-left-color: #0284c7;">
-                    <h3>Kabuuang Pangkalahatang Benta (Grand Total)</h3>
-                    <div class="value" id="totalSalesDisplay" style="color: #0284c7;">₱0.00</div>
-                </div>
-                <div class="summary-card" style="border-left-color: #059669;">
-                    <h3>Cash / Digital Direct Sales</h3>
-                    <div class="value" id="cashSalesDisplay" style="font-size: 1.1rem; color: #059669;">₱0.00</div>
-                </div>
-                <div class="summary-card" style="border-left-color: #d97706;">
-                    <h3>Nakolektang Utang (Paid)</h3>
-                    <div class="value" id="paidUtangSalesDisplay" style="font-size: 1.1rem; color: #d97706;">₱0.00</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 4: UTANG -->
-        <div id="utangTab" class="panel">
-            <h2>📝 Listahan ng Pautang</h2>
-            <div class="summary-row">
-                <div class="summary-card utang">
-                    <h3>Kabuuang Utang na Di Pa Bayad</h3>
-                    <div class="value" id="totalUtangDisplay">₱0.00</div>
-                </div>
-            </div>
-
-            <div class="sub-tabs">
-                <button class="sub-tab-btn active" onclick="switchUtangSubTab('unpaidSubPanel', event)">🔴 Unpaid (May Utang Pa)</button>
-                <button class="sub-tab-btn" onclick="switchUtangSubTab('paidSubPanel', event)">🟢 Paid (Bayad Na)</button>
-            </div>
-
-            <div id="unpaidSubPanel" class="sub-panel active">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Petsa</th>
-                                <th>Nangutang</th>
-                                <th>Detalye</th>
-                                <th>Halaga</th>
-                                <th>Aksyon (Pautang)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="utangUnpaidTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="paidSubPanel" class="sub-panel">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Petsa</th>
-                                <th>Nangutang</th>
-                                <th>Detalye</th>
-                                <th>Halaga</th>
-                                <th>Katayuan</th>
-                                <th>Aksyon (Paid)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="utangPaidTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 5: LOSS -->
-        <div id="lossTab" class="panel">
-            <h2>🍳 Kain Pamilya / Bigay / Loss</h2>
-            <div class="summary-row">
-                <div class="summary-card loss">
-                    <h3>Kabuuang Halaga ng Loss</h3>
-                    <div class="value" id="totalLossDisplay">₱0.00</div>
-                </div>
-            </div>
-            <div class="form-grid" style="background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px dashed #d97706; margin-bottom: 20px;">
-                <div class="form-group">
-                    <label>Paninda <span class="required-star">*</span></label>
-                    <select id="lossProdSelect">
-                        <option value="" disabled selected>-- Pumili ng Paninda --</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Qty <span class="required-star">*</span></label>
-                    <input type="number" id="lossQty" min="0">
-                </div>
-                <div class="form-group">
-                    <label>Dahilan <span class="required-star">*</span></label>
-                    <select id="lossReason">
-                        <option value="" disabled selected>-- Pumili ng Dahilan --</option>
-                        <option value="Ulam ng Pamilya">🍲 Kain Ulam ng Pamilya</option>
-                        <option value="Bigay sa Kamag-anak/Kaibigan">🎁 Bigay sa Kamag-anak / Kaibigan</option>
-                        <option value="Nasira / Panis / Nabasag">⚠ Nasira / Panis / Nabasag</option>
-                        <option value="Bad Debt / Loss (Hindi na Bayaran / Takas)">❌ Bad Debt / Loss</option>
-                    </select>
-                </div>
-                <div class="form-group" style="justify-content: flex-end;">
-                    <label style="display:none">&nbsp;</label>
-                    <button class="btn btn-warning" onclick="recordLoss()">🍳 Itala ang Loss</button>
-                </div>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Petsa</th>
-                            <th>Paninda</th>
-                            <th>Qty</th>
-                            <th>Dahilan</th>
-                            <th>Halaga</th>
-                            <th>Aksyon (Loss)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lossTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TAB 6: SETTINGS -->
+        <!-- TAB 4: SETTINGS -->
         <div id="settingsTab" class="panel">
             <h2>⚙ Baguhin ang Login Details</h2>
             <div class="form-grid" style="max-width: 400px;">
@@ -734,7 +867,7 @@
 
     <script>
         if (!localStorage.getItem('nanay_username')) {
-            localStorage.setItem('nanay_username', 'chai13');
+            localStorage.setItem('nanay_username', 'mama13');
         }
         if (!localStorage.getItem('nanay_password')) {
             localStorage.setItem('nanay_password', '071373');
@@ -806,11 +939,34 @@
             event.target.classList.add('active');
         }
 
+        function openSubView(viewId) {
+            document.getElementById('transactMainMenu').style.display = 'none';
+            document.querySelectorAll('.sub-view').forEach(v => v.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
+        }
+
+        function backToMainMenu() {
+            document.querySelectorAll('.sub-view').forEach(v => v.style.display = 'none');
+            document.getElementById('transactMainMenu').style.display = 'block';
+        }
+
         function switchUtangSubTab(subPanelId, event) {
             document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(subPanelId).classList.add('active');
             event.target.classList.add('active');
+        }
+
+        function toggleLossAccordion() {
+            const content = document.getElementById('lossAccordionContent');
+            const icon = document.getElementById('lossAccordionIcon');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.innerText = '▼';
+            } else {
+                content.style.display = 'block';
+                icon.innerText = '▲';
+            }
         }
 
         function initApp() {
@@ -1042,7 +1198,7 @@
                             <td>${u.qty || '-'}</td>
                             <td>${u.name}</td>
                             <td><span class="badge badge-paid">Bayad Utang</span> <strong>₱${u.amount}</strong></td>
-                            <td><span style="color:#6b7280; font-size:0.8rem;">(Galing Pautang Tab)</span></td>
+                            <td><span style="color:#6b7280; font-size:0.8rem;">(Galing Pautang)</span></td>
                         </tr>`;
                 }
             });
@@ -1082,7 +1238,7 @@
                 return;
             }
             if (!newBuyer) {
-                alert('⚠️️ Ilagay ang pangalan ng buyer.');
+                alert('⚠ Ilagay ang pangalan ng buyer.');
                 return;
             }
 
@@ -1250,6 +1406,42 @@
             renderProducts();
         }
 
+        function renderLoss() {
+            const tbody = document.getElementById('lossTableBody');
+            const reportsTbody = document.getElementById('reportsLossTableBody');
+            tbody.innerHTML = '';
+            reportsTbody.innerHTML = '';
+            let totalLoss = 0;
+
+            losses.forEach((l, index) => {
+                totalLoss += l.total;
+                const rowHtml = `
+                    <tr>
+                        <td>${l.date}</td>
+                        <td><strong>${l.name}</strong></td>
+                        <td>${l.qty || '-'}</td>
+                        <td><span class="badge badge-loss">${l.reason}</span></td>
+                        <td>₱${l.total}</td>
+                        ${tbody === document.getElementById('lossTableBody') ? `<td><button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteLoss(${index})">🗑️ Burahin</button></td>` : ''}
+                    </tr>`;
+                
+                tbody.innerHTML += rowHtml.replace('<td><button class="btn btn-danger"', '<td><button class="btn btn-danger"');
+                
+                // For reports table body (no action column)
+                reportsTbody.innerHTML += `
+                    <tr>
+                        <td>${l.date}</td>
+                        <td><strong>${l.name}</strong></td>
+                        <td>${l.qty || '-'}</td>
+                        <td><span class="badge badge-loss">${l.reason}</span></td>
+                        <td>₱${l.total}</td>
+                    </tr>`;
+            });
+
+            document.getElementById('totalLossDisplay').innerText = `₱${totalLoss.toLocaleString()}`;
+            localStorage.setItem('nanay_losses', JSON.stringify(losses));
+        }
+
         function deleteLoss(index) {
             const l = losses[index];
             if (confirm(`🗑️ Burahin ang rekord na ito?\n\n• Paninda: ${l.name}\n• Qty: ${l.qty}\n• Dahilan: ${l.reason}`)) {
@@ -1263,28 +1455,6 @@
                 renderLoss();
                 renderProducts();
             }
-        }
-
-        function renderLoss() {
-            const tbody = document.getElementById('lossTableBody');
-            tbody.innerHTML = '';
-            let totalLoss = 0;
-
-            losses.forEach((l, index) => {
-                totalLoss += l.total;
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${l.date}</td>
-                        <td><strong>${l.name}</strong></td>
-                        <td>${l.qty || '-'}</td>
-                        <td><span class="badge badge-loss">${l.reason}</span></td>
-                        <td>₱${l.total}</td>
-                        <td><button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteLoss(${index})">🗑️ Burahin</button></td>
-                    </tr>`;
-            });
-
-            document.getElementById('totalLossDisplay').innerText = `₱${totalLoss.toLocaleString()}`;
-            localStorage.setItem('nanay_losses', JSON.stringify(losses));
         }
     </script>
 </body>
