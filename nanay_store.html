@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tindahan ni Nanay 🛒</title>
+    <style>
+        :root {
+            --primary: #d97706;
+            --primary-dark: #b45309;
+            --accent: #059669;
+            --bg-main: #fffbeb;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary-dark);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #fef3c7;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .product-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: var(--primary);
+            background: #fef3c7;
+            padding: 3px 8px;
+            border-radius: 4px;
+            align-self: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🏪 Tindahan ni Nanay</h1>
+            <p>Sari-saring pagkain, frozen goods, at de-kalidad na paninda para sa pamilya!</p>
+        </header>
+
+        <!-- Category Filters -->
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="filterProducts('All', event)">Lahat ng Paninda</button>
+            <button class="filter-btn" onclick="filterProducts('Frozen / Luto', event)">Frozen / Lutong Bahay</button>
+            <button class="filter-btn" onclick="filterProducts('Grocery / Bigas', event)">Grocery / Bigas / Itlog</button>
+            <button class="filter-btn" onclick="filterProducts('Condiments', event)">Condiments / Bagoong</button>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="storeGrid" class="store-grid">
+            <!-- Dito kusang lilitaw ang mga paninda mula sa dashboard ni Nanay -->
+        </div>
+    </div>
+
+    <script>
+        // Kunin ang mga produkto mula sa localStorage (shared sa pagitan ng dashboard at store view)
+        let products = JSON.parse(localStorage.getItem('nanay_products')) || [
+            { name: "Bigas (per kilo)", category: "Grocery / Bigas", price: 55 },
+            { name: "Itlog (per piece)", category: "Grocery / Bigas", price: 8 },
+            { name: "Homemade Shanghai (12pcs)", category: "Frozen / Luto", price: 150 },
+            { name: "Hotdog (per pack)", category: "Frozen / Luto", price: 120 },
+            { name: "Homemade Bagoong (bottle)", category: "Condiments", price: 100 }
+        ];
+
+        let currentCategory = 'All';
+
+        function renderStore(category = 'All') {
+            const grid = document.getElementById('storeGrid');
+            grid.innerHTML = '';
+
+            const filteredProducts = category === 'All' 
+                ? products 
+                : products.filter(p => p.category === category);
+
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = `<div class="empty-state">Walang paninda sa kategoryang ito sa ngayon.</div>`;
+                return;
+            }
+
+            filteredProducts.forEach(p => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <div>
+                            <span class="product-category">${p.category}</span>
+                            <div class="product-name">${p.name}</div>
+                        </div>
+                        <div class="product-price">₱${p.price.toLocaleString()}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterProducts(category, event) {
+            currentCategory = category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderStore(category);
+        }
+
+        // I-load ang mga produkto pagbukas ng pahina
+        renderStore();
+    </script>
+</body>
+</html>
