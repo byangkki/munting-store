@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nanay's Secret Store Dashboard 🔐</title>
+    <style>
+        :root {
+            --primary: #d97706;
+            --primary-dark: #b45309;
+            --accent: #059669;
+            --danger: #dc2626;
+            --bg-main: #fffbeb;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        /* Login Screen Styles */
+        #loginScreen {
+            max-width: 400px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 1px solid #fef3c7;
+        }
+
+        #loginScreen h2 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        #loginScreen p {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Main Dashboard Content (Hidden by default until logged in) */
+        #dashboardContent {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, #1f2937, #374151);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary-dark);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .panel {
+            display: none;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #fef3c7;
+            margin-bottom: 30px;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #fef3c7;
+            padding-bottom: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #4b5563;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: #047857; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-warning { background: #d97706; }
+        .btn-warning:hover { background: #b45309; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #fffbeb;
+            color: var(--primary-dark);
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .badge-unpaid { background: #fee2e2; color: #991b1b; }
+        .badge-paid { background: #dcfce7; color: #065f46; }
+        .badge-loss { background: #fef3c7; color: #b45309; }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .summary-card.sales { border-left-color: var(--accent); }
+        .summary-card.utang { border-left-color: var(--danger); }
+        .summary-card.loss { border-left-color: #d97706; }
+
+        .summary-card h3 { font-size: 0.9rem; color: #6b7280; margin-bottom: 5px; }
+        .summary-card .value { font-size: 1.5rem; font-weight: bold; color: #1f2937; }
+        
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-msg {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen">
+        <h2>🔐 Nanay's Store Login</h2>
+        <p>I-type ang iyong Username at Password para makapasok.</p>
+        
+        <div class="form-group" style="text-align: left; margin-bottom: 10px;">
+            <label>Username</label>
+            <input type="text" id="loginUser" class="login-input" placeholder="chai13">
+        </div>
+        
+        <div class="form-group" style="text-align: left; margin-bottom: 15px;">
+            <label>Password</label>
+            <input type="password" id="loginPass" class="login-input" placeholder="••••••">
+        </div>
+
+        <button class="btn" style="width: 100%;" onclick="handleLogin()">Mag-log in</button>
+        <div id="errorMsg" class="error-msg">Mali ang Username o Password!</div>
+    </div>
+
+    <!-- ACTUAL DASHBOARD CONTENT -->
+    <div id="dashboardContent">
+        <header>
+            <h1>🔐 Pribadong Dashboard ni Nanay</h1>
+            <p>Dito ina-update ang mga paninda, tinitignan ang benta, pautang, at inventory loss.</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('productsTab', event)">📦 Ayusin ang Paninda</button>
+            <button class="tab-btn" onclick="switchTab('salesTab', event)">💰 Benta Ngayon</button>
+            <button class="tab-btn" onclick="switchTab('utangTab', event)">📝 Pautang Tracker</button>
+            <button class="tab-btn" onclick="switchTab('lossTab', event)">🍳 Kain / Bigay / Loss</button>
+            <button class="tab-btn" onclick="switchTab('settingsTab', event)">⚙️ Settings (Palitan Pass)</button>
+        </div>
+
+        <!-- TAB 1: PRODUCTS -->
+        <div id="productsTab" class="panel active">
+            <h2>Magdagdag o Mag-edit ng Paninda</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Pangalan ng Produkto</label>
+                    <input type="text" id="prodName" placeholder="Hal. Hotdog (per pack)">
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="prodCategory">
+                        <option value="Frozen / Luto">Frozen / Lutong Bahay</option>
+                        <option value="Grocery / Bigas">Grocery / Bigas / Itlog</option>
+                        <option value="Condiments">Condiments / Bagoong</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Presyo (₱)</label>
+                    <input type="number" id="prodPrice" placeholder="120">
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <label>&nbsp;</label>
+                    <button class="btn" onclick="addProduct()">Idagdag / I-save</button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paninda</th>
+                        <th>Kategori</th>
+                        <th>Presyo</th>
+                        <th>Aksyon</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- TAB 2: SALES -->
+        <div id="salesTab" class="panel">
+            <h2>Record ng Bentahan</h2>
+            <div class="summary-row">
+                <div class="summary-card sales">
+                    <h3>Kabuuang Benta</h3>
+                    <div class="value" id="totalSalesDisplay">₱0.00</div>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Piliin ang Paninda</label>
+                    <select id="salesProdSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label>Qty</label>
+                    <input type="number" id="salesQty" value="1" min="1">
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <label>&nbsp;</label>
+                    <button class="btn" onclick="recordSale()">Itala ang Benta</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Petsa / Oras</th>
+                        <th>Paninda</th>
+                        <th>Qty</th>
+                        <th>Halaga</th>
+                    </tr>
+                </thead>
+                <tbody id="salesTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- TAB 3: UTANG -->
+        <div id="utangTab" class="panel">
+            <h2>Listahan ng Pautang (Utang Ledger)</h2>
+            <div class="summary-row">
+                <div class="summary-card utang">
+                    <h3>Kabuuang Utang na Di Pa Bayad</h3>
+                    <div class="value" id="totalUtangDisplay">₱0.00</div>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Pangalan ng Nangutang</label>
+                    <input type="text" id="debtorName" placeholder="Aling Nena">
+                </div>
+                <div class="form-group">
+                    <label>Detalye / Items</label>
+                    <input type="text" id="debtorItems" placeholder="1 sakong bigas">
+                </div>
+                <div class="form-group">
+                    <label>Halaga (₱)</label>
+                    <input type="number" id="debtorAmount" placeholder="500">
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-danger" onclick="addUtang()">Itala ang Utang</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pangalan</th>
+                        <th>Detalye</th>
+                        <th>Halaga</th>
+                        <th>Katayuan</th>
+                        <th>Aksyon</th>
+                    </tr>
+                </thead>
+                <tbody id="utangTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- TAB 4: LOSS -->
+        <div id="lossTab" class="panel">
+            <h2>Kain Pamilya / Bigay / Nasira</h2>
+            <div class="summary-row">
+                <div class="summary-card loss">
+                    <h3>Kabuuang Halaga ng Loss</h3>
+                    <div class="value" id="totalLossDisplay">₱0.00</div>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Paninda</label>
+                    <select id="lossProdSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label>Qty</label>
+                    <input type="number" id="lossQty" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Dahilan</label>
+                    <select id="lossReason">
+                        <option value="Ulam ng Pamilya">🍲 Kain Ulam ng Pamilya</option>
+                        <option value="Bigay sa Kamag-anak/Kaibigan">🎁 Bigay sa Kamag-anak / Kaibigan</option>
+                        <option value="Nasira / Panis / Nabasag">⚠️ Nasira / Panis / Nabasag</option>
+                    </select>
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-warning" onclick="recordLoss()">Itala ang Loss</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Petsa</th>
+                        <th>Paninda</th>
+                        <th>Qty</th>
+                        <th>Dahilan</th>
+                        <th>Halaga</th>
+                        <th>Aksyon</th>
+                    </tr>
+                </thead>
+                <tbody id="lossTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- TAB 5: SETTINGS -->
+        <div id="settingsTab" class="panel">
+            <h2>⚙️ Baguhin ang Username at Password</h2>
+            <div class="form-grid" style="max-width: 400px;">
+                <div class="form-group">
+                    <label>Bagong Username</label>
+                    <input type="text" id="newUsername" placeholder="Ilagay ang bagong username">
+                </div>
+                <div class="form-group">
+                    <label>Bagong Password</label>
+                    <input type="password" id="newPassword" placeholder="Ilagay ang bagong password">
+                </div>
+                <div class="form-group">
+                    <button class="btn" onclick="updateCredentials()">I-save ang Bagong Login</button>
+                    <div id="settingsSuccess" class="success-msg">Tagumpay na na-update ang login details!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set Default Credentials kung wala pang naka-save
+        if (!localStorage.getItem('nanay_username')) {
+            localStorage.setItem('nanay_username', 'chai13');
+        }
+        if (!localStorage.getItem('nanay_password')) {
+            localStorage.setItem('nanay_password', '071373');
+        }
+
+        function handleLogin() {
+            const enteredUser = document.getElementById('loginUser').value.trim();
+            const enteredPass = document.getElementById('loginPass').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+
+            const savedUser = localStorage.getItem('nanay_username');
+            const savedPass = localStorage.getItem('nanay_password');
+
+            if (enteredUser === savedUser && enteredPass === savedPass) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                initApp();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('loginPass').value = '';
+            }
+        }
+
+        // Enter key support for login fields
+        document.getElementById('loginPass').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('loginUser').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        function updateCredentials() {
+            const newUser = document.getElementById('newUsername').value.trim();
+            const newPass = document.getElementById('newPassword').value.trim();
+            const successMsg = document.getElementById('settingsSuccess');
+
+            if (!newUser || !newPass) {
+                alert('Punan pareho ang bagong username at password.');
+                return;
+            }
+
+            localStorage.setItem('nanay_username', newUser);
+            localStorage.setItem('nanay_password', newPass);
+
+            successMsg.style.display = 'block';
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        let products = JSON.parse(localStorage.getItem('nanay_products')) || [
+            { name: "Bigas (per kilo)", category: "Grocery / Bigas", price: 55 },
+            { name: "Itlog (per piece)", category: "Grocery / Bigas", price: 8 },
+            { name: "Homemade Shanghai (12pcs)", category: "Frozen / Luto", price: 150 },
+            { name: "Hotdog (per pack)", category: "Frozen / Luto", price: 120 },
+            { name: "Homemade Bagoong (bottle)", category: "Condiments", price: 100 }
+        ];
+
+        let sales = JSON.parse(localStorage.getItem('nanay_sales')) || [];
+        let utangs = JSON.parse(localStorage.getItem('nanay_utangs')) || [];
+        let losses = JSON.parse(localStorage.getItem('nanay_losses')) || [];
+
+        function switchTab(tabId, event) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function initApp() {
+            renderProducts();
+            renderSales();
+            renderUtang();
+            renderLoss();
+            
+            // Pre-fill settings inputs with current credentials for convenience
+            document.getElementById('newUsername').value = localStorage.getItem('nanay_username');
+        }
+
+        function renderProducts() {
+            const tbody = document.getElementById('productTableBody');
+            const selectSales = document.getElementById('salesProdSelect');
+            const selectLoss = document.getElementById('lossProdSelect');
+            
+            tbody.innerHTML = '';
+            selectSales.innerHTML = '';
+            selectLoss.innerHTML = '';
+
+            products.forEach((p, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.category}</td>
+                        <td>₱${p.price}</td>
+                        <td><button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteProduct(${index})">Burahin</button></td>
+                    </tr>
+                `;
+                const opt = `<option value="${index}">${p.name} (₱${p.price})</option>`;
+                selectSales.innerHTML += opt;
+                selectLoss.innerHTML += opt;
+            });
+
+            localStorage.setItem('nanay_products', JSON.stringify(products));
+        }
+
+        function addProduct() {
+            const name = document.getElementById('prodName').value.trim();
+            const category = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+
+            if (!name || isNaN(price)) {
+                alert('Punan ang pangalan at presyo.');
+                return;
+            }
+
+            products.push({ name, category, price });
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodPrice').value = '';
+            renderProducts();
+        }
+
+        function deleteProduct(index) {
+            products.splice(index, 1);
+            renderProducts();
+        }
+
+        function recordSale() {
+            const prodIndex = document.getElementById('salesProdSelect').value;
+            const qty = parseInt(document.getElementById('salesQty').value);
+            if (prodIndex === "" || isNaN(qty) || qty <= 0) return;
+
+            const prod = products[prodIndex];
+            const total = prod.price * qty;
+            const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
+
+            sales.unshift({ date, name: prod.name, qty, total });
+            renderSales();
+        }
+
+        function renderSales() {
+            const tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = '';
+            let totalRev = 0;
+
+            sales.forEach(s => {
+                totalRev += s.total;
+                tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.name}</td><td>${s.qty}</td><td><strong>₱${s.total}</strong></td></tr>`;
+            });
+
+            document.getElementById('totalSalesDisplay').innerText = `₱${totalRev.toLocaleString()}`;
+            localStorage.setItem('nanay_sales', JSON.stringify(sales));
+        }
+
+        function addUtang() {
+            const name = document.getElementById('debtorName').value.trim();
+            const items = document.getElementById('debtorItems').value.trim();
+            const amount = parseFloat(document.getElementById('debtorAmount').value);
+
+            if (!name || !items || isNaN(amount)) return;
+
+            utangs.unshift({ name, items, amount, paid: false });
+            document.getElementById('debtorName').value = '';
+            document.getElementById('debtorItems').value = '';
+            document.getElementById('debtorAmount').value = '';
+            renderUtang();
+        }
+
+        function togglePaid(index) {
+            utangs[index].paid = !utangs[index].paid;
+            renderUtang();
+        }
+
+        function deleteUtang(index) {
+            utangs.splice(index, 1);
+            renderUtang();
+        }
+
+        function renderUtang() {
+            const tbody = document.getElementById('utangTableBody');
+            tbody.innerHTML = '';
+            let totalUnpaid = 0;
+
+            utangs.forEach((u, index) => {
+                if (!u.paid) totalUnpaid += u.amount;
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${u.name}</strong></td>
+                        <td>${u.items}</td>
+                        <td>₱${u.amount}</td>
+                        <td><span class="badge ${u.paid ? 'badge-paid' : 'badge-unpaid'}">${u.paid ? 'BAYAD NA ✓' : 'UTANG PA ✗'}</span></td>
+                        <td>
+                            <button class="btn" style="padding: 5px 10px; font-size: 0.8rem; background: ${u.paid ? '#d97706' : '#059669'};" onclick="togglePaid(${index})">${u.paid ? 'I-balik' : 'Bayad'}</button>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteUtang(${index})">Burahin</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('totalUtangDisplay').innerText = `₱${totalUnpaid.toLocaleString()}`;
+            localStorage.setItem('nanay_utangs', JSON.stringify(utangs));
+        }
+
+        function recordLoss() {
+            const prodIndex = document.getElementById('lossProdSelect').value;
+            const qty = parseInt(document.getElementById('lossQty').value);
+            const reason = document.getElementById('lossReason').value;
+            if (prodIndex === "" || isNaN(qty) || qty <= 0) return;
+
+            const prod = products[prodIndex];
+            const total = prod.price * qty;
+            const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
+
+            losses.unshift({ date, name: prod.name, qty, reason, total });
+            renderLoss();
+        }
+
+        function deleteLoss(index) {
+            losses.splice(index, 1);
+            renderLoss();
+        }
+
+        function renderLoss() {
+            const tbody = document.getElementById('lossTableBody');
+            tbody.innerHTML = '';
+            let totalLoss = 0;
+
+            losses.forEach((l, index) => {
+                totalLoss += l.total;
+                tbody.innerHTML += `<tr><td>${l.date}</td><td><strong>${l.name}</strong></td><td>${l.qty}</td><td><span class="badge badge-loss">${l.reason}</span></td><td>₱${l.total}</td><td><button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteLoss(${index})">Burahin</button></td></tr>`;
+            });
+
+            document.getElementById('totalLossDisplay').innerText = `₱${totalLoss.toLocaleString()}`;
+            localStorage.setItem('nanay_losses', JSON.stringify(losses));
+        }
+    </script>
+</body>
+</html>
