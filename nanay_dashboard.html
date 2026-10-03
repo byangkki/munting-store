@@ -180,6 +180,11 @@
             color: #4b5563;
         }
 
+        .required-star {
+            color: var(--danger);
+            margin-left: 3px;
+        }
+
         input, select {
             padding: 10px;
             border: 1px solid #d1d5db;
@@ -401,20 +406,23 @@
             </div>
             <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                 <div class="form-group">
-                    <label>Piliin ang Paninda</label>
-                    <select id="salesProdSelect"></select>
+                    <label>Piliin ang Paninda <span class="required-star">*</span></label>
+                    <select id="salesProdSelect">
+                        <option value="" disabled selected>-- Pumili ng Paninda --</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Qty na Binenta</label>
+                    <label>Qty na Binenta <span class="required-star">*</span></label>
                     <input type="number" id="salesQty" value="0" min="0">
                 </div>
                 <div class="form-group">
-                    <label>Pangalan ng Buyer / Nangutang</label>
-                    <input type="text" id="salesBuyer" placeholder="Aling Nena (Opsyonal kung Cash)">
+                    <label>Pangalan ng Buyer / Nangutang <span class="required-star">*</span></label>
+                    <input type="text" id="salesBuyer" placeholder="Ilagay ang pangalan">
                 </div>
                 <div class="form-group">
-                    <label>Mode of Payment</label>
+                    <label>Mode of Payment <span class="required-star">*</span></label>
                     <select id="salesPaymentMode">
+                        <option value="" disabled selected>-- Pumili ng Mode --</option>
                         <option value="Cash/Digital">💵 Cash / Digital</option>
                         <option value="Pautang">📝 Pautang (Utang)</option>
                     </select>
@@ -450,8 +458,8 @@
 
             <!-- Sub Tabs para sa Unpaid at Paid Utang -->
             <div class="sub-tabs">
-                <button class="sub-tab-btn active" onclick="switchUtangSubTab('unpaidSubPanel', event)">🔴 Mga Utang Pa (Unpaid)</button>
-                <button class="sub-tab-btn" onclick="switchUtangSubTab('paidSubPanel', event)">🟢 Kasaysayan ng Bayad (Paid)</button>
+                <button class="sub-tab-btn active" onclick="switchUtangSubTab('unpaidSubPanel', event)">🔴 Unpaid</button>
+                <button class="sub-tab-btn" onclick="switchUtangSubTab('paidSubPanel', event)">🟢 Paid</button>
             </div>
 
             <!-- UNPAID UTANG PANEL -->
@@ -499,15 +507,17 @@
             </div>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Paninda</label>
-                    <select id="lossProdSelect"></select>
+                    <label>Paninda <span class="required-star">*</span></label>
+                    <select id="lossProdSelect">
+                        <option value="" disabled selected>-- Pumili ng Paninda --</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Qty</label>
+                    <label>Qty <span class="required-star">*</span></label>
                     <input type="number" id="lossQty" value="0" min="0">
                 </div>
                 <div class="form-group">
-                    <label>Dahilan</label>
+                    <label>Dahilan <span class="required-star">*</span></label>
                     <select id="lossReason">
                         <option value="Ulam ng Pamilya">🍲 Kain Ulam ng Pamilya</option>
                         <option value="Bigay sa Kamag-anak/Kaibigan">🎁 Bigay sa Kamag-anak / Kaibigan</option>
@@ -678,8 +688,8 @@
             const selectLoss = document.getElementById('lossProdSelect');
             
             tbody.innerHTML = '';
-            selectSales.innerHTML = '';
-            selectLoss.innerHTML = '';
+            selectSales.innerHTML = '<option value="" disabled selected>-- Pumili ng Paninda --</option>';
+            selectLoss.innerHTML = '<option value="" disabled selected>-- Pumili ng Paninda --</option>';
 
             products.forEach((p, index) => {
                 tbody.innerHTML += `
@@ -763,11 +773,24 @@
         function recordSale() {
             const prodIndex = document.getElementById('salesProdSelect').value;
             const qty = parseInt(document.getElementById('salesQty').value);
-            const buyer = document.getElementById('salesBuyer').value.trim() || 'Walk-in / Cash';
+            const buyer = document.getElementById('salesBuyer').value.trim();
             const paymentMode = document.getElementById('salesPaymentMode').value;
 
-            if (prodIndex === "" || isNaN(qty) || qty <= 0) {
-                alert('Mangyaring ilagay ang wastong Qty na higit sa 0.');
+            // Strict Validation para matiyak na napunan ang lahat ng 4 fields
+            if (prodIndex === "" || isNaN(prodIndex)) {
+                alert('⚠️ Mangyaring pumili ng Paninda.');
+                return;
+            }
+            if (isNaN(qty) || qty <= 0) {
+                alert('⚠️ Mangyaring maglagay ng Qty na mas mataas sa 0.');
+                return;
+            }
+            if (!buyer) {
+                alert('⚠️ Mangyaring ilagay ang Pangalan ng Buyer o Nangutang.');
+                return;
+            }
+            if (paymentMode === "") {
+                alert('⚠️️ Mangyaring pumili ng Mode of Payment.');
                 return;
             }
 
@@ -787,9 +810,11 @@
                 utangs.unshift({ date, name: buyer, items: `${qty}x ${prod.name}`, amount: total, status: 'unpaid' });
             }
             
+            // I-reset pabalik sa blangko/0 para mapilitang pumili ulit sa susunod
+            document.getElementById('salesProdSelect').selectedIndex = 0;
             document.getElementById('salesQty').value = '0';
             document.getElementById('salesBuyer').value = '';
-            document.getElementById('salesPaymentMode').value = 'Cash/Digital';
+            document.getElementById('salesPaymentMode').selectedIndex = 0;
 
             renderSales();
             renderUtang();
@@ -894,7 +919,7 @@
                             <td><strong>${u.name}</strong></td>
                             <td>${u.items}</td>
                             <td>₱${u.amount}</td>
-                            <td><span class="badge badge-paid">BAYAD NA ✓</span></td>
+                            <td><span class="badge badge-paid">PAID ✓</span></td>
                             <td>
                                 <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="markUtangUnpaid(${index})">I-balik sa Unpaid</button>
                                 <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteUtang(${index})">Burahin</button>
@@ -913,8 +938,12 @@
             const qty = parseInt(document.getElementById('lossQty').value);
             const reason = document.getElementById('lossReason').value;
             
-            if (prodIndex === "" || isNaN(qty) || qty <= 0) {
-                alert('Mangyaring ilagay ang wastong Qty na higit sa 0 para sa Loss.');
+            if (prodIndex === "" || isNaN(prodIndex)) {
+                alert('⚠️ Mangyaring pumili ng Paninda para sa Loss.');
+                return;
+            }
+            if (isNaN(qty) || qty <= 0) {
+                alert('⚠️ Mangyaring maglagay ng Qty na mas mataas sa 0.');
                 return;
             }
 
@@ -930,6 +959,7 @@
 
             losses.unshift({ date, name: prod.name, qty, reason, total });
             
+            document.getElementById('lossProdSelect').selectedIndex = 0;
             document.getElementById('lossQty').value = '0';
 
             renderLoss();
