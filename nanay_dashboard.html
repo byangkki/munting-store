@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chai's Secret Store Dashboard 🔐</title>
+    <title>Chai's Little Store Dashboard 🔐</title>
     <style>
         :root {
             --primary: #d97706;
@@ -357,11 +357,11 @@
             <h2>Record ng Bentahan (Bawas Stock Automatic)</h2>
             <div class="summary-row">
                 <div class="summary-card sales">
-                    <h3>Kabuuang Benta</h3>
+                    <h3>Kabuuang Benta (Cash/Digital)</h3>
                     <div class="value" id="totalSalesDisplay">₱0.00</div>
                 </div>
             </div>
-            <div class="form-grid">
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                 <div class="form-group">
                     <label>Piliin ang Paninda</label>
                     <select id="salesProdSelect"></select>
@@ -370,9 +370,20 @@
                     <label>Qty na Binenta</label>
                     <input type="number" id="salesQty" value="1" min="1">
                 </div>
+                <div class="form-group">
+                    <label>Pangalan ng Buyer / Nangutang</label>
+                    <input type="text" id="salesBuyer" placeholder="Aling Nena (Opsyonal kung Cash)">
+                </div>
+                <div class="form-group">
+                    <label>Mode of Payment</label>
+                    <select id="salesPaymentMode">
+                        <option value="Cash/Digital">💵 Cash / Digital</option>
+                        <option value="Pautang">📝 Pautang (Utang)</option>
+                    </select>
+                </div>
                 <div class="form-group" style="justify-content: flex-end;">
                     <label>&nbsp;</label>
-                    <button class="btn" onclick="recordSale()">Itala ang Benta</button>
+                    <button class="btn" onclick="recordSale()">Itala ang Transaksyon</button>
                 </div>
             </div>
             <table>
@@ -381,6 +392,7 @@
                         <th>Petsa / Oras</th>
                         <th>Paninda</th>
                         <th>Qty</th>
+                        <th>Buyer</th>
                         <th>Halaga</th>
                     </tr>
                 </thead>
@@ -390,36 +402,19 @@
 
         <!-- TAB 3: UTANG -->
         <div id="utangTab" class="panel">
-            <h2>Listahan ng Pautang (Utang Ledger)</h2>
+            <h2>Listahan ng Pautang (Utang Ledger History)</h2>
             <div class="summary-row">
                 <div class="summary-card utang">
                     <h3>Kabuuang Utang na Di Pa Bayad</h3>
                     <div class="value" id="totalUtangDisplay">₱0.00</div>
                 </div>
             </div>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Pangalan ng Nangutang</label>
-                    <input type="text" id="debtorName" placeholder="Aling Nena">
-                </div>
-                <div class="form-group">
-                    <label>Detalye / Items</label>
-                    <input type="text" id="debtorItems" placeholder="1 sakong bigas">
-                </div>
-                <div class="form-group">
-                    <label>Halaga (₱)</label>
-                    <input type="number" id="debtorAmount" placeholder="500">
-                </div>
-                <div class="form-group" style="justify-content: flex-end;">
-                    <label>&nbsp;</label>
-                    <button class="btn btn-danger" onclick="addUtang()">Itala ang Utang</button>
-                </div>
-            </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Pangalan</th>
-                        <th>Detalye</th>
+                        <th>Petsa</th>
+                        <th>Pangalan ng Nangutang</th>
+                        <th>Detalye ng Paninda & Qty</th>
                         <th>Halaga</th>
                         <th>Katayuan</th>
                         <th>Aksyon</th>
@@ -452,7 +447,7 @@
                     <select id="lossReason">
                         <option value="Ulam ng Pamilya">🍲 Kain Ulam ng Pamilya</option>
                         <option value="Bigay sa Kamag-anak/Kaibigan">🎁 Bigay sa Kamag-anak / Kaibigan</option>
-                        <option value="Nasira / Panis / Nabasag">⚠️️ Nasira / Panis / Nabasag</option>
+                        <option value="Nasira / Panis / Nabasag">⚠ Nasira / Panis / Nabasag</option>
                     </select>
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
@@ -696,6 +691,9 @@
         function recordSale() {
             const prodIndex = document.getElementById('salesProdSelect').value;
             const qty = parseInt(document.getElementById('salesQty').value);
+            const buyer = document.getElementById('salesBuyer').value.trim() || 'Walk-in / Cash';
+            const paymentMode = document.getElementById('salesPaymentMode').value;
+
             if (prodIndex === "" || isNaN(qty) || qty <= 0) return;
 
             const prod = products[prodIndex];
@@ -708,12 +706,20 @@
             const total = prod.price * qty;
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
-            sales.unshift({ date, name: prod.name, qty, total });
+            if (paymentMode === 'Cash/Digital') {
+                sales.unshift({ date, name: prod.name, qty, buyer, total });
+            } else {
+                // Direktang pumapasok sa Pautang Tracker kung pautang ang mode
+                utangs.unshift({ date, name: buyer, items: `${qty}x ${prod.name}`, amount: total, paid: false });
+            }
             
-            // I-reset ang Qty input box pabalik sa 1 pagkatapos itala
+            // I-reset ang inputs pagkatapos itala
             document.getElementById('salesQty').value = 1;
+            document.getElementById('salesBuyer').value = '';
+            document.getElementById('salesPaymentMode').value = 'Cash/Digital';
 
             renderSales();
+            renderUtang();
             renderProducts();
         }
 
@@ -724,25 +730,11 @@
 
             sales.forEach(s => {
                 totalRev += s.total;
-                tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.name}</td><td>${s.qty}</td><td><strong>₱${s.total}</strong></td></tr>`;
+                tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.name}</td><td>${s.qty}</td><td>${s.buyer}</td><td><strong>₱${s.total}</strong></td></tr>`;
             });
 
             document.getElementById('totalSalesDisplay').innerText = `₱${totalRev.toLocaleString()}`;
             localStorage.setItem('nanay_sales', JSON.stringify(sales));
-        }
-
-        function addUtang() {
-            const name = document.getElementById('debtorName').value.trim();
-            const items = document.getElementById('debtorItems').value.trim();
-            const amount = parseFloat(document.getElementById('debtorAmount').value);
-
-            if (!name || !items || isNaN(amount)) return;
-
-            utangs.unshift({ name, items, amount, paid: false });
-            document.getElementById('debtorName').value = '';
-            document.getElementById('debtorItems').value = '';
-            document.getElementById('debtorAmount').value = '';
-            renderUtang();
         }
 
         function togglePaid(index) {
@@ -764,6 +756,7 @@
                 if (!u.paid) totalUnpaid += u.amount;
                 tbody.innerHTML += `
                     <tr>
+                        <td>${u.date || 'Kamakailan'}</td>
                         <td><strong>${u.name}</strong></td>
                         <td>${u.items}</td>
                         <td>₱${u.amount}</td>
@@ -798,7 +791,6 @@
 
             losses.unshift({ date, name: prod.name, qty, reason, total });
             
-            // I-reset ang Loss Qty input box pabalik sa 1 pagkatapos itala
             document.getElementById('lossQty').value = 1;
 
             renderLoss();
