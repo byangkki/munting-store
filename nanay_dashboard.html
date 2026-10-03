@@ -175,6 +175,8 @@
         .btn-warning:hover { background: #b45309; }
         .btn-primary { background: #0284c7; }
         .btn-primary:hover { background: #0369a1; }
+        .btn-secondary { background: #6b7280; }
+        .btn-secondary:hover { background: #4b5563; }
 
         table {
             width: 100%;
@@ -238,6 +240,34 @@
             margin-top: 10px;
             font-weight: bold;
             display: none;
+        }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid #fef3c7;
+        }
+
+        .modal-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            border-bottom: 2px solid #fef3c7;
+            padding-bottom: 8px;
         }
     </style>
 </head>
@@ -465,6 +495,34 @@
         </div>
     </div>
 
+    <!-- EDIT PRODUCT MODAL POPUP -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>✏️ I-edit ang Detalye ng Paninda</h3>
+            <input type="hidden" id="editIndex">
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Pangalan ng Produkto</label>
+                <input type="text" id="modalEditName">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Presyo (₱)</label>
+                <input type="number" id="modalEditPrice">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Stock Qty (Bilang)</label>
+                <input type="number" id="modalEditStock" min="0">
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeEditModal()">Kanselahin</button>
+                <button class="btn" onclick="saveEditedProduct()">I-save ang Pagbabago</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         if (!localStorage.getItem('nanay_username')) {
             localStorage.setItem('nanay_username', 'chai13');
@@ -564,7 +622,7 @@
                         <td>₱${p.price}</td>
                         <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${p.stock} pcs</span></td>
                         <td>
-                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="editProduct(${index})">I-edit</button>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="openEditModal(${index})">I-edit</button>
                             <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteProduct(${index})">Burahin</button>
                         </td>
                     </tr>
@@ -595,27 +653,36 @@
             renderProducts();
         }
 
-        function editProduct(index) {
+        function openEditModal(index) {
             const p = products[index];
-            const newName = prompt("Bagong Pangalan ng Produkto:", p.name);
-            if (newName === null) return; // Na-cancel
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalEditName').value = p.name;
+            document.getElementById('modalEditPrice').value = p.price;
+            document.getElementById('modalEditStock').value = p.stock;
+            
+            document.getElementById('editModal').style.display = 'flex';
+        }
 
-            const newPriceStr = prompt("Bagong Presyo (₱):", p.price);
-            if (newPriceStr === null) return;
-            const newPrice = parseFloat(newPriceStr);
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
 
-            const newStockStr = prompt("Bagong Stock Qty (Bilang):", p.stock);
-            if (newStockStr === null) return;
-            const newStock = parseInt(newStockStr);
+        function saveEditedProduct() {
+            const index = document.getElementById('editIndex').value;
+            const newName = document.getElementById('modalEditName').value.trim();
+            const newPrice = parseFloat(document.getElementById('modalEditPrice').value);
+            const newStock = parseInt(document.getElementById('modalEditStock').value);
 
-            if (!newName.trim() || isNaN(newPrice) || isNaN(newStock)) {
-                alert('May maling nailagay. Hindi nabago ang produkto.');
+            if (!newName || isNaN(newPrice) || isNaN(newStock)) {
+                alert('Punan nang tama ang pangalan, presyo, at stock quantity.');
                 return;
             }
 
-            products[index].name = newName.trim();
+            products[index].name = newName;
             products[index].price = newPrice;
             products[index].stock = newStock;
+
+            closeEditModal();
             renderProducts();
         }
 
