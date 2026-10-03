@@ -114,36 +114,6 @@
             border-color: #1f2937;
         }
 
-        .sub-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .sub-tab-btn {
-            background: #f3f4f6;
-            border: 1px solid #d1d5db;
-            color: #4b5563;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .sub-tab-btn.active {
-            background: #1f2937;
-            color: white;
-            border-color: #1f2937;
-        }
-
-        .sub-panel {
-            display: none;
-        }
-        .sub-panel.active {
-            display: block;
-        }
-
         .panel {
             display: none;
             background: var(--card-bg);
@@ -157,7 +127,6 @@
             display: block;
         }
 
-        /* Distinct Color Themes per Tab */
         #transactTab { border-top: 8px solid #059669; background-color: #f3faf7; }
         #reportsTab { border-top: 8px solid #0284c7; background-color: #f0f9ff; }
         #productsTab { border-top: 8px solid #d97706; background-color: #fffdf9; }
@@ -174,7 +143,6 @@
         #productsTab h2 { color: #b45309; }
         #settingsTab h2 { color: #374151; }
 
-        /* Interactive Transact Menu Grid */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -331,27 +299,13 @@
         .badge-paid { background: #dcfce7; color: #065f46; }
         .badge-loss { background: #fef3c7; color: #b45309; }
 
-        .summary-row {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        @media(min-width: 600px) {
-            .summary-row {
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-                gap: 15px;
-                margin-bottom: 25px;
-            }
-        }
-
         .summary-card {
             background: #fff;
             padding: 15px;
             border-radius: 10px;
             border-left: 5px solid var(--primary);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
         }
         .summary-card.sales { border-left-color: var(--accent); }
         .summary-card.utang { border-left-color: var(--danger); }
@@ -393,7 +347,7 @@
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
-            font-size: 0.95krem;
+            font-size: 0.95rem;
             color: #334155;
         }
 
@@ -587,33 +541,42 @@
             <h2>📊 Buod at Ulat ng mga Benta at Utang</h2>
             <p style="font-size: 0.9rem; color: #4b5563; margin-bottom: 20px;">Dito makikita ang kabuuang pondo mula sa cash, digital, at nakolektang bayad-utang.</p>
             
-            <!-- TOP TOTAL SUMMARY CARDS -->
-            <div class="summary-row">
-                <div class="summary-card reports" style="border-left-color: #0284c7;">
-                    <h3>Kabuuang Pangkalahatang Benta (Grand Total)</h3>
-                    <div class="value" id="totalSalesDisplay" style="color: #0284c7;">₱0.00</div>
+            <!-- TOTAL SALES ACCORDION BOX -->
+            <div class="report-section-box" style="border-color: #0284c7;">
+                <div class="report-section-header" style="background: #e0f2fe; color: #0369a1;" onclick="toggleReportSection('totalSalesAccordionContent', 'totalSalesIcon')">
+                    <div>
+                        <span style="font-size: 0.85rem; color: #6b7280; display: block;">Kabuuang Pangkalahatang Benta (Grand Total)</span>
+                        <span id="totalSalesDisplay" style="font-size: 1.4rem; color: #0284c7; font-weight: bold;">₱0.00</span>
+                    </div>
+                    <span id="totalSalesIcon">▼ (I-click para sa Breakdown)</span>
                 </div>
-                <div class="summary-card" style="border-left-color: #059669;">
-                    <h3>Cash / Digital Direct Sales</h3>
-                    <div class="value" id="cashSalesDisplay" style="font-size: 1.1rem; color: #059669;">₱0.00</div>
-                </div>
-                <div class="summary-card" style="border-left-color: #d97706;">
-                    <h3>Nakolektang Utang (Paid)</h3>
-                    <div class="value" id="paidUtangSalesDisplay" style="font-size: 1.1rem; color: #d97706;">₱0.00</div>
+                <div id="totalSalesAccordionContent" class="report-section-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="summary-card" style="border-left-color: #059669; margin-bottom: 0;">
+                            <h3>Cash / Digital Direct Sales</h3>
+                            <div class="value" id="cashSalesDisplay" style="font-size: 1.1rem; color: #059669;">₱0.00</div>
+                        </div>
+                        <div class="summary-card" style="border-left-color: #d97706; margin-bottom: 0;">
+                            <h3>Nakolektang Utang (Paid)</h3>
+                            <div class="value" id="paidUtangSalesDisplay" style="font-size: 1.1rem; color: #d97706;">₱0.00</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- DEFAULT VIEW: UNPAID PAUTANG HISTORY -->
+            <!-- PENDING SALES (UNPAID UTANG TOTAL CARD) -->
+            <div class="summary-card utang" style="margin-top: 15px;">
+                <h3>Pending Sales (Kabuuang Pautang na Di Pa Bayad)</h3>
+                <div class="value" id="totalUtangDisplay">₱0.00</div>
+            </div>
+
+            <!-- DEFAULT OPEN: UNPAID PAUTANG HISTORY -->
             <div class="report-section-box" style="border-color: #fca5a5;">
                 <div class="report-section-header" style="background: #fff5f5; color: #991b1b;" onclick="toggleReportSection('unpaidContent', 'unpaidIcon')">
                     <span>🔴 Unpaid Pautang History (Kasalukuyang May Utang Pa)</span>
-                    <span id="unpaidIcon">▼ (Nakatago / I-click para buksan)</span>
+                    <span id="unpaidIcon">▲</span>
                 </div>
                 <div id="unpaidContent" class="report-section-content" style="display: block;">
-                    <div class="summary-card utang" style="margin-bottom: 15px;">
-                        <h3>Kabuuang Utang na Di Pa Bayad</h3>
-                        <div class="value" id="totalUtangDisplay">₱0.00</div>
-                    </div>
                     <div class="table-container">
                         <table>
                             <thead>
@@ -945,10 +908,10 @@
             const icon = document.getElementById(iconId);
             if (content.style.display === 'block') {
                 content.style.display = 'none';
-                icon.innerText = '▼';
+                icon.innerText = contentId === 'totalSalesAccordionContent' ? '▼ (I-click para sa Breakdown)' : '▼';
             } else {
                 content.style.display = 'block';
-                icon.innerText = '▲';
+                icon.innerText = contentId === 'totalSalesAccordionContent' ? '▲ (I-tago ang Breakdown)' : '▲';
             }
         }
 
