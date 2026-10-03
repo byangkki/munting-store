@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nanay's Secret Store Dashboard 🔐</title>
+    <title>Chai's Secret Store Dashboard 🔐</title>
     <style>
         :root {
             --primary: #d97706;
@@ -28,7 +28,6 @@
             padding: 20px;
         }
 
-        /* Login Screen Styles */
         #loginScreen {
             max-width: 400px;
             margin: 60px auto;
@@ -60,7 +59,6 @@
             margin-bottom: 15px;
         }
 
-        /* Main Dashboard Content (Hidden by default until logged in) */
         #dashboardContent {
             display: none;
             max-width: 1000px;
@@ -135,7 +133,7 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-bottom: 15px;
         }
@@ -245,7 +243,7 @@
 
     <!-- LOGIN SCREEN -->
     <div id="loginScreen">
-        <h2>🔐 Nanay's Store Login</h2>
+        <h2>🔐 Dashboard Login</h2>
         <p>I-type ang iyong Username at Password para makapasok.</p>
         
         <div class="form-group" style="text-align: left; margin-bottom: 10px;">
@@ -265,12 +263,12 @@
     <!-- ACTUAL DASHBOARD CONTENT -->
     <div id="dashboardContent">
         <header>
-            <h1>🔐 Pribadong Dashboard ni Nanay</h1>
-            <p>Dito ina-update ang mga paninda, tinitignan ang benta, pautang, at inventory loss.</p>
+            <h1>🔐 Pribadong Dashboard ni Chai</h1>
+            <p>Dito ina-update ang mga paninda, stock quantity, benta, pautang, at inventory loss.</p>
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('productsTab', event)">📦 Ayusin ang Paninda</button>
+            <button class="tab-btn active" onclick="switchTab('productsTab', event)">📦 Paninda & Stocks</button>
             <button class="tab-btn" onclick="switchTab('salesTab', event)">💰 Benta Ngayon</button>
             <button class="tab-btn" onclick="switchTab('utangTab', event)">📝 Pautang Tracker</button>
             <button class="tab-btn" onclick="switchTab('lossTab', event)">🍳 Kain / Bigay / Loss</button>
@@ -279,7 +277,7 @@
 
         <!-- TAB 1: PRODUCTS -->
         <div id="productsTab" class="panel active">
-            <h2>Magdagdag o Mag-edit ng Paninda</h2>
+            <h2>Magdagdag o Mag-edit ng Paninda at Stocks</h2>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Pangalan ng Produkto</label>
@@ -297,6 +295,10 @@
                     <label>Presyo (₱)</label>
                     <input type="number" id="prodPrice" placeholder="120">
                 </div>
+                <div class="form-group">
+                    <label>Stock Qty (Bilang)</label>
+                    <input type="number" id="prodStock" placeholder="25" min="0">
+                </div>
                 <div class="form-group" style="justify-content: flex-end;">
                     <label>&nbsp;</label>
                     <button class="btn" onclick="addProduct()">Idagdag / I-save</button>
@@ -309,6 +311,7 @@
                         <th>Paninda</th>
                         <th>Kategori</th>
                         <th>Presyo</th>
+                        <th>Stock Qty</th>
                         <th>Aksyon</th>
                     </tr>
                 </thead>
@@ -318,7 +321,7 @@
 
         <!-- TAB 2: SALES -->
         <div id="salesTab" class="panel">
-            <h2>Record ng Bentahan</h2>
+            <h2>Record ng Bentahan (Bawas Stock Automatic)</h2>
             <div class="summary-row">
                 <div class="summary-card sales">
                     <h3>Kabuuang Benta</h3>
@@ -331,7 +334,7 @@
                     <select id="salesProdSelect"></select>
                 </div>
                 <div class="form-group">
-                    <label>Qty</label>
+                    <label>Qty na Binenta</label>
                     <input type="number" id="salesQty" value="1" min="1">
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
@@ -395,7 +398,7 @@
 
         <!-- TAB 4: LOSS -->
         <div id="lossTab" class="panel">
-            <h2>Kain Pamilya / Bigay / Nasira</h2>
+            <h2>Kain Pamilya / Bigay / Nasira (Bawas Stock)</h2>
             <div class="summary-row">
                 <div class="summary-card loss">
                     <h3>Kabuuang Halaga ng Loss</h3>
@@ -460,7 +463,6 @@
     </div>
 
     <script>
-        // Set Default Credentials kung wala pang naka-save
         if (!localStorage.getItem('nanay_username')) {
             localStorage.setItem('nanay_username', 'chai13');
         }
@@ -486,7 +488,6 @@
             }
         }
 
-        // Enter key support for login fields
         document.getElementById('loginPass').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') handleLogin();
         });
@@ -517,11 +518,11 @@
         }
 
         let products = JSON.parse(localStorage.getItem('nanay_products')) || [
-            { name: "Bigas (per kilo)", category: "Grocery / Bigas", price: 55 },
-            { name: "Itlog (per piece)", category: "Grocery / Bigas", price: 8 },
-            { name: "Homemade Shanghai (12pcs)", category: "Frozen / Luto", price: 150 },
-            { name: "Hotdog (per pack)", category: "Frozen / Luto", price: 120 },
-            { name: "Homemade Bagoong (bottle)", category: "Condiments", price: 100 }
+            { name: "Bigas (per kilo)", category: "Grocery / Bigas", price: 55, stock: 50 },
+            { name: "Itlog (per piece)", category: "Grocery / Bigas", price: 8, stock: 100 },
+            { name: "Homemade Shanghai (12pcs)", category: "Frozen / Luto", price: 150, stock: 15 },
+            { name: "Hotdog (per pack)", category: "Frozen / Luto", price: 120, stock: 20 },
+            { name: "Homemade Bagoong (bottle)", category: "Condiments", price: 100, stock: 10 }
         ];
 
         let sales = JSON.parse(localStorage.getItem('nanay_sales')) || [];
@@ -540,8 +541,6 @@
             renderSales();
             renderUtang();
             renderLoss();
-            
-            // Pre-fill settings inputs with current credentials for convenience
             document.getElementById('newUsername').value = localStorage.getItem('nanay_username');
         }
 
@@ -560,10 +559,11 @@
                         <td><strong>${p.name}</strong></td>
                         <td>${p.category}</td>
                         <td>₱${p.price}</td>
+                        <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${p.stock} pcs</span></td>
                         <td><button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteProduct(${index})">Burahin</button></td>
                     </tr>
                 `;
-                const opt = `<option value="${index}">${p.name} (₱${p.price})</option>`;
+                const opt = `<option value="${index}">${p.name} (Stock: ${p.stock})</option>`;
                 selectSales.innerHTML += opt;
                 selectLoss.innerHTML += opt;
             });
@@ -575,15 +575,17 @@
             const name = document.getElementById('prodName').value.trim();
             const category = document.getElementById('prodCategory').value;
             const price = parseFloat(document.getElementById('prodPrice').value);
+            const stock = parseInt(document.getElementById('prodStock').value);
 
-            if (!name || isNaN(price)) {
-                alert('Punan ang pangalan at presyo.');
+            if (!name || isNaN(price) || isNaN(stock)) {
+                alert('Punan ang pangalan, presyo, at stock quantity.');
                 return;
             }
 
-            products.push({ name, category, price });
+            products.push({ name, category, price, stock });
             document.getElementById('prodName').value = '';
             document.getElementById('prodPrice').value = '';
+            document.getElementById('prodStock').value = '';
             renderProducts();
         }
 
@@ -598,11 +600,18 @@
             if (prodIndex === "" || isNaN(qty) || qty <= 0) return;
 
             const prod = products[prodIndex];
+            if (prod.stock < qty) {
+                alert('Oops! Kulang ang stock para sa dami na ito.');
+                return;
+            }
+
+            prod.stock -= qty;
             const total = prod.price * qty;
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
             sales.unshift({ date, name: prod.name, qty, total });
             renderSales();
+            renderProducts();
         }
 
         function renderSales() {
@@ -675,11 +684,18 @@
             if (prodIndex === "" || isNaN(qty) || qty <= 0) return;
 
             const prod = products[prodIndex];
+            if (prod.stock < qty) {
+                alert('Oops! Kulang ang stock para sa dami na ito.');
+                return;
+            }
+
+            prod.stock -= qty;
             const total = prod.price * qty;
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
             losses.unshift({ date, name: prod.name, qty, reason, total });
             renderLoss();
+            renderProducts();
         }
 
         function deleteLoss(index) {
