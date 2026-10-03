@@ -315,12 +315,12 @@
         
         <div class="form-group" style="text-align: left; margin-bottom: 10px;">
             <label>Username</label>
-            <input type="text" id="loginUser" class="login-input" placeholder="chai13">
+            <input type="text" id="loginUser" class="login-input" autocomplete="username">
         </div>
         
         <div class="form-group" style="text-align: left; margin-bottom: 15px;">
             <label>Password</label>
-            <input type="password" id="loginPass" class="login-input" placeholder="••••••">
+            <input type="password" id="loginPass" class="login-input" autocomplete="current-password">
         </div>
 
         <button class="btn" style="width: 100%;" onclick="handleLogin()">Mag-log in</button>
@@ -347,24 +347,25 @@
             <h2>Magdagdag ng Bagong Paninda</h2>
             <div class="form-grid" style="margin-bottom: 30px; background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
                 <div class="form-group">
-                    <label>Pangalan ng Produkto</label>
-                    <input type="text" id="prodName" placeholder="Hal. Hotdog (per pack)">
+                    <label>Pangalan ng Produkto <span class="required-star">*</span></label>
+                    <input type="text" id="prodName">
                 </div>
                 <div class="form-group">
-                    <label>Kategori</label>
+                    <label>Kategori <span class="required-star">*</span></label>
                     <select id="prodCategory">
+                        <option value="" disabled selected>-- Pumili ng Kategori --</option>
                         <option value="Frozen / Luto">Frozen / Lutong Bahay</option>
                         <option value="Grocery / Bigas">Grocery / Bigas / Itlog</option>
                         <option value="Condiments">Condiments / Bagoong</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Presyo (₱)</label>
-                    <input type="number" id="prodPrice" placeholder="120">
+                    <label>Presyo (₱) <span class="required-star">*</span></label>
+                    <input type="number" id="prodPrice" min="0">
                 </div>
                 <div class="form-group">
-                    <label>Stock Qty (Bilang)</label>
-                    <input type="number" id="prodStock" placeholder="0" min="0" value="0">
+                    <label>Stock Qty (Bilang) <span class="required-star">*</span></label>
+                    <input type="number" id="prodStock" min="0">
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
                     <label>&nbsp;</label>
@@ -413,7 +414,7 @@
                 </div>
                 <div class="form-group">
                     <label>Qty na Binenta <span class="required-star">*</span></label>
-                    <input type="number" id="salesQty" value="0" min="0">
+                    <input type="number" id="salesQty" min="0">
                 </div>
                 <div class="form-group">
                     <label>Pangalan ng Buyer / Nangutang <span class="required-star">*</span></label>
@@ -515,11 +516,12 @@
                 </div>
                 <div class="form-group">
                     <label>Qty <span class="required-star">*</span></label>
-                    <input type="number" id="lossQty" value="0" min="0">
+                    <input type="number" id="lossQty" min="0">
                 </div>
                 <div class="form-group">
                     <label>Dahilan <span class="required-star">*</span></label>
                     <select id="lossReason">
+                        <option value="" disabled selected>-- Pumili ng Dahilan --</option>
                         <option value="Ulam ng Pamilya">🍲 Kain Ulam ng Pamilya</option>
                         <option value="Bigay sa Kamag-anak/Kaibigan">🎁 Bigay sa Kamag-anak / Kaibigan</option>
                         <option value="Nasira / Panis / Nabasag">⚠ Nasira / Panis / Nabasag</option>
@@ -755,15 +757,28 @@
             const price = parseFloat(document.getElementById('prodPrice').value);
             const stock = parseInt(document.getElementById('prodStock').value);
 
-            if (!name || isNaN(price) || isNaN(stock)) {
-                alert('Punan ang pangalan, presyo, at stock quantity.');
+            if (!name) {
+                alert('⚠️ Mangyaring ilagay ang Pangalan ng Produkto.');
+                return;
+            }
+            if (!category) {
+                alert('⚠️ Mangyaring pumili ng Kategori.');
+                return;
+            }
+            if (isNaN(price) || price < 0) {
+                alert('⚠️ Mangyaring maglagay ng tamang Presyo.');
+                return;
+            }
+            if (isNaN(stock) || stock < 0) {
+                alert('⚠️ Mangyaring maglagay ng tamang Stock Qty.');
                 return;
             }
 
             products.push({ name, category, price, stock });
             document.getElementById('prodName').value = '';
+            document.getElementById('prodCategory').selectedIndex = 0;
             document.getElementById('prodPrice').value = '';
-            document.getElementById('prodStock').value = '0';
+            document.getElementById('prodStock').value = '';
             renderProducts();
         }
 
@@ -818,7 +833,7 @@
                 return;
             }
             if (isNaN(qty) || qty <= 0) {
-                alert('⚠️️ Mangyaring maglagay ng Qty na mas mataas sa 0.');
+                alert('⚠️ Mangyaring maglagay ng Qty na mas mataas sa 0.');
                 return;
             }
             if (!buyer) {
@@ -826,7 +841,7 @@
                 return;
             }
             if (paymentMode === "") {
-                alert('⚠ Mangyaring pumili ng Mode of Payment.');
+                alert('⚠️️ Mangyaring pumili ng Mode of Payment.');
                 return;
             }
 
@@ -840,17 +855,29 @@
             const total = prod.price * qty;
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
-            sales.unshift({ 
-                date, 
-                prodName: prod.name, 
-                qty, 
-                buyer, 
-                total, 
-                type: 'Cash/Digital' 
-            });
+            if (paymentMode === 'Cash/Digital') {
+                sales.unshift({ 
+                    date, 
+                    prodName: prod.name, 
+                    qty, 
+                    buyer, 
+                    total, 
+                    type: 'Cash/Digital' 
+                });
+            } else {
+                utangs.unshift({ 
+                    date, 
+                    name: buyer, 
+                    items: `${qty}x ${prod.name}`, 
+                    qty: qty, 
+                    prodName: prod.name, 
+                    amount: total, 
+                    status: 'unpaid' 
+                });
+            }
             
             document.getElementById('salesProdSelect').selectedIndex = 0;
-            document.getElementById('salesQty').value = '0';
+            document.getElementById('salesQty').value = '';
             document.getElementById('salesBuyer').value = '';
             document.getElementById('salesPaymentMode').selectedIndex = 0;
 
@@ -888,7 +915,7 @@
                         <tr>
                             <td>${u.date}</td>
                             <td><strong>${u.items} (Utang ni ${u.name})</strong></td>
-                            <td>-</td>
+                            <td>${u.qty || '-'}</td>
                             <td>${u.name}</td>
                             <td><span class="badge badge-paid">Bayad Utang</span> <strong>₱${u.amount}</strong></td>
                             <td>-</td>
@@ -939,17 +966,14 @@
             const prod = products.find(p => p.name === oldSale.prodName);
 
             if (prod) {
-                // Ibalik muna ang lumang qty sa stock
                 prod.stock += oldSale.qty;
 
-                // Suriin kung sapat ang stock para sa bagong qty
                 if (prod.stock < newQty) {
                     alert('Oops! Kulang ang stock para sa binagong dami na ito.');
-                    prod.stock -= oldSale.qty; // Ibalik ang bawas sakaling mag-cancel
+                    prod.stock -= oldSale.qty;
                     return;
                 }
 
-                // Bawasan ulit ng bagong stock
                 prod.stock -= newQty;
                 oldSale.total = prod.price * newQty;
             }
@@ -969,7 +993,7 @@
                 const prod = products.find(p => p.name === s.prodName);
                 
                 if (prod) {
-                    prod.stock += s.qty; // Ibalik ang stock
+                    prod.stock += s.qty;
                 }
 
                 sales.splice(index, 1);
@@ -996,10 +1020,11 @@
                 
                 losses.unshift({
                     date: u.date,
-                    name: `Utang ni ${u.name} (${u.items})`,
-                    qty: 1,
+                    name: u.prodName || u.items,
+                    qty: u.qty || 1,
                     reason: 'Bad Debt / Loss (Hindi na Bayaran / Takas)',
-                    total: u.amount
+                    total: u.amount,
+                    prodName: u.prodName
                 });
 
                 utangs.splice(index, 1);
@@ -1010,10 +1035,27 @@
         }
 
         function deleteUtang(index) {
-            if (confirm("Burahin nang tuluyan ang rekord ng pautang na ito?")) {
+            if (confirm("Burahin nang tuluyan ang rekord ng pautang na ito? Ibabalik ang stock sa paninda.")) {
+                const u = utangs[index];
+                if (u.prodName) {
+                    const prod = products.find(p => p.name === u.prodName);
+                    if (prod) {
+                        prod.stock += (u.qty || 1);
+                    }
+                } else if (u.items) {
+                    const parts = u.items.split('x ');
+                    if (parts.length === 2) {
+                        const q = parseInt(parts[0]);
+                        const pName = parts[1];
+                        const prod = products.find(p => p.name === pName);
+                        if (prod && !isNaN(q)) prod.stock += q;
+                    }
+                }
+
                 utangs.splice(index, 1);
                 renderUtang();
                 renderSales();
+                renderProducts();
             }
         }
 
@@ -1076,6 +1118,10 @@
                 alert('⚠️ Mangyaring maglagay ng Qty na mas mataas sa 0.');
                 return;
             }
+            if (!reason) {
+                alert('⚠️ Mangyaring pumili ng Dahilan.');
+                return;
+            }
 
             const prod = products[prodIndex];
             if (prod.stock < qty) {
@@ -1087,18 +1133,36 @@
             const total = prod.price * qty;
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
-            losses.unshift({ date, name: prod.name, qty, reason, total });
+            losses.unshift({ 
+                date, 
+                name: prod.name, 
+                qty, 
+                reason, 
+                total, 
+                prodName: prod.name 
+            });
             
             document.getElementById('lossProdSelect').selectedIndex = 0;
-            document.getElementById('lossQty').value = '0';
+            document.getElementById('lossQty').value = '';
+            document.getElementById('lossReason').selectedIndex = 0;
 
             renderLoss();
             renderProducts();
         }
 
         function deleteLoss(index) {
-            losses.splice(index, 1);
-            renderLoss();
+            if (confirm("Burahin ang rekord na ito? Ibabalik ang stock sa paninda.")) {
+                const l = losses[index];
+                if (l.prodName) {
+                    const prod = products.find(p => p.name === l.prodName);
+                    if (prod) {
+                        prod.stock += (l.qty || 0);
+                    }
+                }
+                losses.splice(index, 1);
+                renderLoss();
+                renderProducts();
+            }
         }
 
         function renderLoss() {
