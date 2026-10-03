@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chai's Secret Store 🛒</title>
+    <title>Chai's Little Store 🛒</title>
     <style>
         :root {
             --primary: #d97706;
@@ -147,8 +147,8 @@
 
     <div class="container">
         <header>
-            <h1>🛒 Chai's Secret Store</h1>
-            <p>Tingnan ang aming mga available na paninda at sariwang luto!</p>
+            <h1>🛒 Chai's Little Store</h1>
+            <p>Tingnan ang aming mga paninda at home made goods!</p>
         </header>
 
         <!-- PAANO UMORDER INSTRUCTION -->
@@ -156,14 +156,14 @@
             <h3>📌 Paano Umorder:</h3>
             <ol>
                 <li>Piliin at tandaan ang produktong gusto mong bilhin mula sa listahan sa ibaba.</li>
-                <li>I-click ang link na ito para dumiretso sa Facebook profile ni Mama: <a href="https://www.facebook.com/share/18VJ7pN1Y8/" target="_blank">Mag-message kay Mama sa Facebook ↗</a></li>
-                <li>Magpadala ng personal message (PM) para sa iyong order at pag-usapan ang pag-deliver o pag-pick up!</li>
+                <li>I-click ang page na ito to order: <a href="https://www.facebook.com/share/18VJ7pN1Y8/" target="_blank">Chai/Rosalia ↗</a></li>
+                <li>Mag-iwan ng message para umorder at pag-usapan ang pag-deliver o pag-pick up!</li>
             </ol>
         </div>
 
         <h2 class="section-title">📦 Kasalukuyang Paninda</h2>
         <div class="product-grid" id="consumerProductList">
-            <!-- Dito kusang papasok ang mga produkto mula sa dashboard ni Mama -->
+            <!-- Dito kusang papasok ang mga produkto mula sa dashboard -->
         </div>
     </div>
 
@@ -171,7 +171,6 @@
         function loadConsumerProducts() {
             const productGrid = document.getElementById('consumerProductList');
             
-            // Kinukuha ang mga produkto na naka-save sa localStorage galing sa dashboard ni Mama
             const products = JSON.parse(localStorage.getItem('nanay_products')) || [
                 { name: "Bigas (per kilo)", category: "Grocery / Bigas", price: 55, stock: 50 },
                 { name: "Itlog (per piece)", category: "Grocery / Bigas", price: 8, stock: 100 },
@@ -201,7 +200,6 @@
             });
         }
 
-        // I-load ang mga produkto pagbukas ng pahina
         loadConsumerProducts();
     </script>
 </body>
