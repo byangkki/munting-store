@@ -25,14 +25,15 @@
         body {
             background-color: var(--bg-main);
             color: var(--text-color);
-            padding: 20px;
+            padding: 15px;
         }
 
         #loginScreen {
             max-width: 400px;
-            margin: 60px auto;
+            width: 100%;
+            margin: 40px auto;
             background: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             text-align: center;
@@ -63,32 +64,33 @@
             display: none;
             max-width: 1000px;
             margin: 0 auto;
+            width: 100%;
         }
 
         header {
             text-align: center;
             background: linear-gradient(135deg, #1f2937, #374151);
             color: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 16px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
+            font-size: 1.5rem;
+            margin-bottom: 6px;
         }
 
         header p {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             opacity: 0.9;
         }
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
             justify-content: center;
             flex-wrap: wrap;
         }
@@ -97,9 +99,10 @@
             background: white;
             border: 2px solid var(--primary);
             color: var(--primary-dark);
-            padding: 10px 18px;
+            padding: 8px 14px;
             border-radius: 30px;
             font-weight: bold;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -111,7 +114,7 @@
 
         .sub-tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 15px;
         }
 
@@ -119,10 +122,10 @@
             background: #f3f4f6;
             border: 1px solid #d1d5db;
             color: #4b5563;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
         }
 
@@ -142,11 +145,11 @@
         .panel {
             display: none;
             background: var(--card-bg);
-            padding: 25px;
+            padding: 15px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid #fef3c7;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .panel.active {
@@ -155,17 +158,27 @@
 
         h2 {
             color: var(--primary-dark);
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
             border-bottom: 2px solid #fef3c7;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
+            grid-template-columns: 1fr;
+            gap: 12px;
             margin-bottom: 15px;
+        }
+
+        @media(min-width: 600px) {
+            .form-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            body { padding: 20px; }
+            header { padding: 25px; }
+            header h1 { font-size: 1.8rem; }
+            .panel { padding: 25px; }
         }
 
         .form-group {
@@ -175,7 +188,7 @@
         }
 
         label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: bold;
             color: #4b5563;
         }
@@ -190,15 +203,17 @@
             border: 1px solid #d1d5db;
             border-radius: 8px;
             font-size: 0.95rem;
+            width: 100%;
         }
 
         .btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 8px;
             font-weight: bold;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -213,17 +228,29 @@
         .btn-secondary { background: #6b7280; }
         .btn-secondary:hover { background: #4b5563; }
 
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 10px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            min-width: 500px;
+        }
+
+        @media(min-width: 600px) {
+            table { font-size: 0.95rem; min-width: auto; }
         }
 
         th, td {
-            padding: 12px;
+            padding: 10px 8px;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
         }
 
         th {
@@ -232,9 +259,9 @@
         }
 
         .badge {
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
         }
         .badge-unpaid { background: #fee2e2; color: #991b1b; }
@@ -243,14 +270,22 @@
 
         .summary-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media(min-width: 600px) {
+            .summary-row {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 15px;
+                margin-bottom: 25px;
+            }
         }
 
         .summary-card {
             background: #fff;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             border-left: 5px solid var(--primary);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -259,8 +294,8 @@
         .summary-card.utang { border-left-color: var(--danger); }
         .summary-card.loss { border-left-color: #d97706; }
 
-        .summary-card h3 { font-size: 0.9rem; color: #6b7280; margin-bottom: 5px; }
-        .summary-card .value { font-size: 1.5rem; font-weight: bold; color: #1f2937; }
+        .summary-card h3 { font-size: 0.85rem; color: #6b7280; margin-bottom: 5px; }
+        .summary-card .value { font-size: 1.3rem; font-weight: bold; color: #1f2937; }
         
         .error-msg {
             color: var(--danger);
@@ -271,7 +306,7 @@
 
         .success-msg {
             color: var(--accent);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-top: 10px;
             font-weight: bold;
             display: none;
@@ -286,23 +321,38 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 15px;
         }
 
         .modal-content {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             border: 1px solid #fef3c7;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-content h3 {
             color: var(--primary-dark);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border-bottom: 2px solid #fef3c7;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
+            font-size: 1.1rem;
+        }
+
+        .red-banner {
+            background-color: #fee2e2;
+            border: 1px solid #dc2626;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            display: none;
         }
     </style>
 </head>
@@ -339,13 +389,13 @@
             <button class="tab-btn" onclick="switchTab('salesTab', event)">💰 Benta Ngayon</button>
             <button class="tab-btn" onclick="switchTab('utangTab', event)">📝 Pautang Tracker</button>
             <button class="tab-btn" onclick="switchTab('lossTab', event)">🍳 Kain / Bigay / Loss</button>
-            <button class="tab-btn" onclick="switchTab('settingsTab', event)">⚙️ Settings (Palitan Pass)</button>
+            <button class="tab-btn" onclick="switchTab('settingsTab', event)">⚙️ Settings</button>
         </div>
 
         <!-- TAB 1: PRODUCTS -->
         <div id="productsTab" class="panel active">
             <h2>Magdagdag ng Bagong Paninda</h2>
-            <div class="form-grid" style="margin-bottom: 30px; background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
+            <div class="form-grid" style="margin-bottom: 25px; background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
                 <div class="form-group">
                     <label>Pangalan ng Produkto <span class="required-star">*</span></label>
                     <input type="text" id="prodName">
@@ -368,44 +418,46 @@
                     <input type="number" id="prodStock" min="0">
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
-                    <label>&nbsp;</label>
+                    <label style="display:none">&nbsp;</label>
                     <button class="btn" onclick="addProduct()">Idagdag ang Paninda</button>
                 </div>
             </div>
 
-            <h2>Listahan ng mga Paninda (Maaaring I-edit o Burahin)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Paninda</th>
-                        <th>Kategori</th>
-                        <th>Presyo</th>
-                        <th>Stock Qty</th>
-                        <th>Aksyon</th>
-                    </tr>
-                </thead>
-                <tbody id="productTableBody"></tbody>
-            </table>
+            <h2>Listahan ng mga Paninda</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Paninda</th>
+                            <th>Kategori</th>
+                            <th>Presyo</th>
+                            <th>Stock Qty</th>
+                            <th>Aksyon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- TAB 2: SALES -->
         <div id="salesTab" class="panel">
-            <h2>Record ng Bentahan (Bawas Stock Automatic)</h2>
+            <h2>Record ng Bentahan</h2>
             <div class="summary-row">
                 <div class="summary-card sales">
-                    <h3>Kabuuang Benta (Cash / Digital + Paid Utang)</h3>
+                    <h3>Kabuuang Benta</h3>
                     <div class="value" id="totalSalesDisplay">₱0.00</div>
                 </div>
                 <div class="summary-card" style="border-left-color: #0284c7;">
                     <h3>Cash / Digital Direct Sales</h3>
-                    <div class="value" id="cashSalesDisplay" style="font-size: 1.2rem; color: #0284c7;">₱0.00</div>
+                    <div class="value" id="cashSalesDisplay" style="font-size: 1.1rem; color: #0284c7;">₱0.00</div>
                 </div>
                 <div class="summary-card" style="border-left-color: #059669;">
-                    <h3>Nakolektang Bayad mula sa Utang</h3>
-                    <div class="value" id="paidUtangSalesDisplay" style="font-size: 1.2rem; color: #059669;">₱0.00</div>
+                    <h3>Nakolektang Utang</h3>
+                    <div class="value" id="paidUtangSalesDisplay" style="font-size: 1.1rem; color: #059669;">₱0.00</div>
                 </div>
             </div>
-            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+            <div class="form-grid" style="grid-template-columns: 1fr;">
                 <div class="form-group">
                     <label>Piliin ang Paninda <span class="required-star">*</span></label>
                     <select id="salesProdSelect">
@@ -429,28 +481,30 @@
                     </select>
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
-                    <label>&nbsp;</label>
+                    <label style="display:none">&nbsp;</label>
                     <button class="btn" onclick="recordSale()">Itala ang Transaksyon</button>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Petsa / Oras</th>
-                        <th>Paninda</th>
-                        <th>Qty</th>
-                        <th>Buyer</th>
-                        <th>Uri / Halaga</th>
-                        <th>Aksyon</th>
-                    </tr>
-                </thead>
-                <tbody id="salesTableBody"></tbody>
-            </table>
+            <div class="table-container" style="margin-top: 15px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Petsa / Oras</th>
+                            <th>Paninda</th>
+                            <th>Qty</th>
+                            <th>Buyer</th>
+                            <th>Uri / Halaga</th>
+                            <th>Aksyon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- TAB 3: UTANG -->
         <div id="utangTab" class="panel">
-            <h2>Listahan ng Pautang (Utang Ledger History)</h2>
+            <h2>Listahan ng Pautang</h2>
             <div class="summary-row">
                 <div class="summary-card utang">
                     <h3>Kabuuang Utang na Di Pa Bayad</h3>
@@ -458,49 +512,50 @@
                 </div>
             </div>
 
-            <!-- Sub Tabs para sa Unpaid at Paid Utang -->
             <div class="sub-tabs">
                 <button class="sub-tab-btn active" onclick="switchUtangSubTab('unpaidSubPanel', event)">🔴 Unpaid</button>
                 <button class="sub-tab-btn" onclick="switchUtangSubTab('paidSubPanel', event)">🟢 Paid</button>
             </div>
 
-            <!-- UNPAID UTANG PANEL -->
             <div id="unpaidSubPanel" class="sub-panel active">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Petsa</th>
-                            <th>Pangalan ng Nangutang</th>
-                            <th>Detalye ng Paninda & Qty</th>
-                            <th>Halaga</th>
-                            <th>Aksyon / Pagbabayad</th>
-                        </tr>
-                    </thead>
-                    <tbody id="utangUnpaidTableBody"></tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Petsa</th>
+                                <th>Nangutang</th>
+                                <th>Detalye</th>
+                                <th>Halaga</th>
+                                <th>Aksyon</th>
+                            </tr>
+                        </thead>
+                        <tbody id="utangUnpaidTableBody"></tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- PAID UTANG PANEL -->
             <div id="paidSubPanel" class="sub-panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Petsa</th>
-                            <th>Pangalan ng Nangutang</th>
-                            <th>Detalye ng Paninda & Qty</th>
-                            <th>Halaga</th>
-                            <th>Katayuan</th>
-                            <th>Aksyon</th>
-                        </tr>
-                    </thead>
-                    <tbody id="utangPaidTableBody"></tbody>
-                </table>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Petsa</th>
+                                <th>Nangutang</th>
+                                <th>Detalye</th>
+                                <th>Halaga</th>
+                                <th>Katayuan</th>
+                                <th>Aksyon</th>
+                            </tr>
+                        </thead>
+                        <tbody id="utangPaidTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- TAB 4: LOSS -->
         <div id="lossTab" class="panel">
-            <h2>Kain Pamilya / Bigay / Nasira / Naging Loss (Bawas Stock)</h2>
+            <h2>Kain Pamilya / Bigay / Loss</h2>
             <div class="summary-row">
                 <div class="summary-card loss">
                     <h3>Kabuuang Halaga ng Loss</h3>
@@ -525,32 +580,34 @@
                         <option value="Ulam ng Pamilya">🍲 Kain Ulam ng Pamilya</option>
                         <option value="Bigay sa Kamag-anak/Kaibigan">🎁 Bigay sa Kamag-anak / Kaibigan</option>
                         <option value="Nasira / Panis / Nabasag">⚠ Nasira / Panis / Nabasag</option>
-                        <option value="Bad Debt / Loss (Hindi na Bayaran / Takas)">❌ Bad Debt / Loss (Hindi na Bayaran / Takas)</option>
+                        <option value="Bad Debt / Loss (Hindi na Bayaran / Takas)">❌ Bad Debt / Loss</option>
                     </select>
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
-                    <label>&nbsp;</label>
+                    <label style="display:none">&nbsp;</label>
                     <button class="btn btn-warning" onclick="recordLoss()">Itala ang Loss</button>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Petsa</th>
-                        <th>Paninda</th>
-                        <th>Qty</th>
-                        <th>Dahilan</th>
-                        <th>Halaga</th>
-                        <th>Aksyon</th>
-                    </tr>
-                </thead>
-                <tbody id="lossTableBody"></tbody>
-            </table>
+            <div class="table-container" style="margin-top: 15px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Petsa</th>
+                            <th>Paninda</th>
+                            <th>Qty</th>
+                            <th>Dahilan</th>
+                            <th>Halaga</th>
+                            <th>Aksyon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lossTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- TAB 5: SETTINGS -->
         <div id="settingsTab" class="panel">
-            <h2>⚙ Baguhin ang Username at Password</h2>
+            <h2>⚙ Baguhin ang Login Details</h2>
             <div class="form-grid" style="max-width: 400px;">
                 <div class="form-group">
                     <label>Bagong Username</label>
@@ -573,7 +630,21 @@
         <div class="modal-content">
             <h3>✏️ I-edit ang Detalye ng Paninda</h3>
             <input type="hidden" id="editIndex">
+            <input type="hidden" id="originalPrice">
             
+            <div id="priceWarningBanner" class="red-banner">
+                ⚠️ Are you sure you want to change the price of item <strong id="warningItemName"></strong>?
+                <div style="margin-top: 8px; display: flex; gap: 8px;">
+                    <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.8rem;" onclick="confirmPriceChangeYes()">Yes</button>
+                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="confirmPriceChangeNo()">No</button>
+                </div>
+            </div>
+
+            <div id="passwordAuthSection" style="display:none; margin-bottom: 15px; background: #fff5f5; padding: 10px; border-radius: 8px; border: 1px solid #feb2b2;">
+                <label style="color: #991b1b;">Enter password to authorize price change:</label>
+                <input type="password" id="authPasswordInput" placeholder="Password" style="margin-top: 5px;">
+            </div>
+
             <div class="form-group" style="margin-bottom: 12px;">
                 <label>Pangalan ng Produkto</label>
                 <input type="text" id="modalEditName">
@@ -590,8 +661,8 @@
             </div>
 
             <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeEditModal()">Kanselahin</button>
-                <button class="btn" onclick="saveEditedProduct()">I-save ang Pagbabago</button>
+                <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                <button class="btn" onclick="saveEditedProduct()">Save</button>
             </div>
         </div>
     </div>
@@ -626,8 +697,8 @@
             </div>
 
             <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeEditSalesModal()">Kanselahin</button>
-                <button class="btn" onclick="saveEditedSale()">I-save ang Pagbabago</button>
+                <button class="btn btn-secondary" onclick="closeEditSalesModal()">Cancel</button>
+                <button class="btn" onclick="saveEditedSale()">Save</button>
             </div>
         </div>
     </div>
@@ -738,8 +809,8 @@
                         <td>₱${p.price}</td>
                         <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${p.stock} pcs</span></td>
                         <td>
-                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="openEditModal(${index})">I-edit</button>
-                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteProduct(${index})">Burahin</button>
+                            <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem; margin-right: 3px;" onclick="openEditModal(${index})">I-edit</button>
+                            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteProduct(${index})">Burahin</button>
                         </td>
                     </tr>
                 `;
@@ -782,13 +853,21 @@
             renderProducts();
         }
 
+        let pendingPriceChangeConfirmed = false;
+
         function openEditModal(index) {
             const p = products[index];
             document.getElementById('editIndex').value = index;
+            document.getElementById('originalPrice').value = p.price;
             document.getElementById('modalEditName').value = p.name;
             document.getElementById('modalEditPrice').value = p.price;
             document.getElementById('modalEditStock').value = p.stock;
             
+            document.getElementById('priceWarningBanner').style.display = 'none';
+            document.getElementById('passwordAuthSection').style.display = 'none';
+            document.getElementById('authPasswordInput').value = '';
+            pendingPriceChangeConfirmed = false;
+
             document.getElementById('editModal').style.display = 'flex';
         }
 
@@ -798,6 +877,7 @@
 
         function saveEditedProduct() {
             const index = document.getElementById('editIndex').value;
+            const originalPrice = parseFloat(document.getElementById('originalPrice').value);
             const newName = document.getElementById('modalEditName').value.trim();
             const newPrice = parseFloat(document.getElementById('modalEditPrice').value);
             const newStock = parseInt(document.getElementById('modalEditStock').value);
@@ -807,12 +887,41 @@
                 return;
             }
 
+            const priceChanged = (newPrice !== originalPrice);
+
+            if (priceChanged && !pendingPriceChangeConfirmed) {
+                document.getElementById('warningItemName').innerText = newName;
+                document.getElementById('priceWarningBanner').style.display = 'block';
+                return;
+            }
+
+            if (priceChanged && pendingPriceChangeConfirmed) {
+                const passwordInput = document.getElementById('authPasswordInput').value.trim();
+                const savedPass = localStorage.getItem('nanay_password');
+
+                if (passwordInput !== savedPass) {
+                    alert('Mali ang password! Hindi na-save ang pagbabago ng presyo.');
+                    return;
+                }
+            }
+
             products[index].name = newName;
             products[index].price = newPrice;
             products[index].stock = newStock;
 
             closeEditModal();
             renderProducts();
+        }
+
+        function confirmPriceChangeYes() {
+            pendingPriceChangeConfirmed = true;
+            document.getElementById('priceWarningBanner').style.display = 'none';
+            document.getElementById('passwordAuthSection').style.display = 'block';
+        }
+
+        function confirmPriceChangeNo() {
+            document.getElementById('priceWarningBanner').style.display = 'none';
+            pendingPriceChangeConfirmed = false;
         }
 
         function deleteProduct(index) {
@@ -841,7 +950,7 @@
                 return;
             }
             if (paymentMode === "") {
-                alert('⚠️️ Mangyaring pumili ng Mode of Payment.');
+                alert('⚠ Mangyaring pumili ng Mode of Payment.');
                 return;
             }
 
@@ -856,24 +965,9 @@
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
             if (paymentMode === 'Cash/Digital') {
-                sales.unshift({ 
-                    date, 
-                    prodName: prod.name, 
-                    qty, 
-                    buyer, 
-                    total, 
-                    type: 'Cash/Digital' 
-                });
+                sales.unshift({ date, prodName: prod.name, qty, buyer, total, type: 'Cash/Digital' });
             } else {
-                utangs.unshift({ 
-                    date, 
-                    name: buyer, 
-                    items: `${qty}x ${prod.name}`, 
-                    qty: qty, 
-                    prodName: prod.name, 
-                    amount: total, 
-                    status: 'unpaid' 
-                });
+                utangs.unshift({ date, name: buyer, items: `${qty}x ${prod.name}`, qty: qty, prodName: prod.name, amount: total, status: 'unpaid' });
             }
             
             document.getElementById('salesProdSelect').selectedIndex = 0;
@@ -902,8 +996,8 @@
                         <td>${s.buyer}</td>
                         <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">Cash/Digital</span> <strong>₱${s.total}</strong></td>
                         <td>
-                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="openEditSalesModal(${index})">I-edit</button>
-                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteSale(${index})">Burahin</button>
+                            <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem; margin-right: 3px;" onclick="openEditSalesModal(${index})">I-edit</button>
+                            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteSale(${index})">Burahin</button>
                         </td>
                     </tr>`;
             });
@@ -967,13 +1061,11 @@
 
             if (prod) {
                 prod.stock += oldSale.qty;
-
                 if (prod.stock < newQty) {
                     alert('Oops! Kulang ang stock para sa binagong dami na ito.');
                     prod.stock -= oldSale.qty;
                     return;
                 }
-
                 prod.stock -= newQty;
                 oldSale.total = prod.price * newQty;
             }
@@ -991,11 +1083,9 @@
             if (confirm("Sigurado ka bang gusto mong burahin ang bentang ito? Ibabalik ang stock nito sa paninda.")) {
                 const s = sales[index];
                 const prod = products.find(p => p.name === s.prodName);
-                
                 if (prod) {
                     prod.stock += s.qty;
                 }
-
                 sales.splice(index, 1);
                 renderSales();
                 renderProducts();
@@ -1015,20 +1105,17 @@
         }
 
         function markUtangLoss(index) {
-            if (confirm("Sigurado ka bang itong utang ay naging 'Loss' na (takas / hindi na mababayaran)? Idi-direkta ito sa Loss list.")) {
+            if (confirm("Sigurado ka bang itong utang ay naging 'Loss' na? Idi-direkta ito sa Loss list.")) {
                 const u = utangs[index];
-                
                 losses.unshift({
                     date: u.date,
                     name: u.prodName || u.items,
                     qty: u.qty || 1,
-                    reason: 'Bad Debt / Loss (Hindi na Bayaran / Takas)',
+                    reason: 'Bad Debt / Loss',
                     total: u.amount,
                     prodName: u.prodName
                 });
-
                 utangs.splice(index, 1);
-
                 renderUtang();
                 renderLoss();
             }
@@ -1042,16 +1129,7 @@
                     if (prod) {
                         prod.stock += (u.qty || 1);
                     }
-                } else if (u.items) {
-                    const parts = u.items.split('x ');
-                    if (parts.length === 2) {
-                        const q = parseInt(parts[0]);
-                        const pName = parts[1];
-                        const prod = products.find(p => p.name === pName);
-                        if (prod && !isNaN(q)) prod.stock += q;
-                    }
                 }
-
                 utangs.splice(index, 1);
                 renderUtang();
                 renderSales();
@@ -1065,7 +1143,6 @@
             
             unpaidTbody.innerHTML = '';
             paidTbody.innerHTML = '';
-            
             let totalUnpaid = 0;
 
             utangs.forEach((u, index) => {
@@ -1078,9 +1155,9 @@
                             <td>${u.items}</td>
                             <td>₱${u.amount}</td>
                             <td>
-                                <button class="btn" style="padding: 5px 10px; font-size: 0.8rem; background: #059669; margin-right: 5px;" onclick="markUtangPaid(${index})">Mark as Paid ✓</button>
-                                <button class="btn btn-warning" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="markUtangLoss(${index})">Tag as Loss ❌</button>
-                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteUtang(${index})">Burahin</button>
+                                <button class="btn" style="padding: 4px 8px; font-size: 0.75rem; background: #059669; margin-right: 3px;" onclick="markUtangPaid(${index})">Paid ✓</button>
+                                <button class="btn btn-warning" style="padding: 4px 8px; font-size: 0.75rem; margin-right: 3px;" onclick="markUtangLoss(${index})">Loss ❌</button>
+                                <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteUtang(${index})">Burahin</button>
                             </td>
                         </tr>
                     `;
@@ -1093,8 +1170,8 @@
                             <td>₱${u.amount}</td>
                             <td><span class="badge badge-paid">PAID ✓</span></td>
                             <td>
-                                <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="markUtangUnpaid(${index})">I-balik sa Unpaid</button>
-                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteUtang(${index})">Burahin</button>
+                                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem; margin-right: 3px;" onclick="markUtangUnpaid(${index})">Unpaid</button>
+                                <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteUtang(${index})">Burahin</button>
                             </td>
                         </tr>
                     `;
@@ -1133,14 +1210,7 @@
             const total = prod.price * qty;
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
-            losses.unshift({ 
-                date, 
-                name: prod.name, 
-                qty, 
-                reason, 
-                total, 
-                prodName: prod.name 
-            });
+            losses.unshift({ date, name: prod.name, qty, reason, total, prodName: prod.name });
             
             document.getElementById('lossProdSelect').selectedIndex = 0;
             document.getElementById('lossQty').value = '';
@@ -1172,7 +1242,7 @@
 
             losses.forEach((l, index) => {
                 totalLoss += l.total;
-                tbody.innerHTML += `<tr><td>${l.date}</td><td><strong>${l.name}</strong></td><td>${l.qty || '-'}</td><td><span class="badge badge-loss">${l.reason}</span></td><td>₱${l.total}</td><td><button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteLoss(${index})">Burahin</button></td></tr>`;
+                tbody.innerHTML += `<tr><td>${l.date}</td><td><strong>${l.name}</strong></td><td>${l.qty || '-'}</td><td><span class="badge badge-loss">${l.reason}</span></td><td>₱${l.total}</td><td><button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteLoss(${index})">Burahin</button></td></tr>`;
             });
 
             document.getElementById('totalLossDisplay').innerText = `₱${totalLoss.toLocaleString()}`;
