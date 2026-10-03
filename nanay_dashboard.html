@@ -173,6 +173,8 @@
         .btn-danger:hover { background: #b91c1c; }
         .btn-warning { background: #d97706; }
         .btn-warning:hover { background: #b45309; }
+        .btn-primary { background: #0284c7; }
+        .btn-primary:hover { background: #0369a1; }
 
         table {
             width: 100%;
@@ -277,8 +279,8 @@
 
         <!-- TAB 1: PRODUCTS -->
         <div id="productsTab" class="panel active">
-            <h2>Magdagdag o Mag-edit ng Paninda at Stocks</h2>
-            <div class="form-grid">
+            <h2>Magdagdag ng Bagong Paninda</h2>
+            <div class="form-grid" style="margin-bottom: 30px; background: #fffbeb; padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
                 <div class="form-group">
                     <label>Pangalan ng Produkto</label>
                     <input type="text" id="prodName" placeholder="Hal. Hotdog (per pack)">
@@ -301,10 +303,11 @@
                 </div>
                 <div class="form-group" style="justify-content: flex-end;">
                     <label>&nbsp;</label>
-                    <button class="btn" onclick="addProduct()">Idagdag / I-save</button>
+                    <button class="btn" onclick="addProduct()">Idagdag ang Paninda</button>
                 </div>
             </div>
 
+            <h2>Listahan ng mga Paninda (Maaaring I-edit o Burahin)</h2>
             <table>
                 <thead>
                     <tr>
@@ -560,7 +563,10 @@
                         <td>${p.category}</td>
                         <td>₱${p.price}</td>
                         <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${p.stock} pcs</span></td>
-                        <td><button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteProduct(${index})">Burahin</button></td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="editProduct(${index})">I-edit</button>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteProduct(${index})">Burahin</button>
+                        </td>
                     </tr>
                 `;
                 const opt = `<option value="${index}">${p.name} (Stock: ${p.stock})</option>`;
@@ -589,9 +595,35 @@
             renderProducts();
         }
 
-        function deleteProduct(index) {
-            products.splice(index, 1);
+        function editProduct(index) {
+            const p = products[index];
+            const newName = prompt("Bagong Pangalan ng Produkto:", p.name);
+            if (newName === null) return; // Na-cancel
+
+            const newPriceStr = prompt("Bagong Presyo (₱):", p.price);
+            if (newPriceStr === null) return;
+            const newPrice = parseFloat(newPriceStr);
+
+            const newStockStr = prompt("Bagong Stock Qty (Bilang):", p.stock);
+            if (newStockStr === null) return;
+            const newStock = parseInt(newStockStr);
+
+            if (!newName.trim() || isNaN(newPrice) || isNaN(newStock)) {
+                alert('May maling nailagay. Hindi nabago ang produkto.');
+                return;
+            }
+
+            products[index].name = newName.trim();
+            products[index].price = newPrice;
+            products[index].stock = newStock;
             renderProducts();
+        }
+
+        function deleteProduct(index) {
+            if (confirm("Sigurado ka bang gusto mong burahin ang panindang ito?")) {
+                products.splice(index, 1);
+                renderProducts();
+            }
         }
 
         function recordSale() {
