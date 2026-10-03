@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tindahan ni Nanay 🛒</title>
+    <title>Tindahan ni Chai 🛒</title>
     <style>
         :root {
             --primary: #d97706;
             --primary-dark: #b45309;
             --accent: #059669;
+            --danger: #dc2626;
             --bg-main: #fffbeb;
             --card-bg: #ffffff;
             --text-color: #1f2937;
@@ -50,6 +51,41 @@
         header p {
             font-size: 1rem;
             opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        /* Order Instruction Banner */
+        .order-banner {
+            background: #ffffff;
+            color: #1f2937;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--accent);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .order-banner strong {
+            color: var(--primary-dark);
+        }
+
+        .fb-link {
+            display: inline-block;
+            background: #1877f2;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        .fb-link:hover {
+            background: #145dbf;
         }
 
         .filter-section {
@@ -117,11 +153,20 @@
             margin-bottom: 8px;
         }
 
+        .stock-status {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .in-stock { color: var(--accent); }
+        .out-stock { color: var(--danger); }
+
         .product-price {
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--accent);
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .empty-state {
@@ -137,9 +182,18 @@
 
     <div class="container">
         <header>
-            <h1>🏪 Tindahan ni Nanay</h1>
+            <h1>🏪 Tindahan ni Chai</h1>
             <p>Sari-saring pagkain, frozen goods, at de-kalidad na paninda para sa pamilya!</p>
         </header>
+
+        <!-- Order Instructions -->
+        <div class="order-banner">
+            <h3>🛒 Paano Umorder:</h3>
+            <p>1. Tignan ang mga magagandang paninda sa ibaba at piliin ang gusto mo.</p>
+            <p>2. I-check kung may stock pa (dapat nakasaad ay <strong>Available</strong>).</p>
+            <p>3. Para makapag-reserve o umorder, i-click ang link sa ibaba at i-message direkta si Chai sa kanyang Facebook account:</p>
+            <a href="https://www.facebook.com/rosalia.gemillan" target="_blank" class="fb-link">💬 Message Rosalia Gemillan sa Facebook</a>
+        </div>
 
         <!-- Category Filters -->
         <div class="filter-section">
@@ -150,19 +204,16 @@
         </div>
 
         <!-- Product Grid -->
-        <div id="storeGrid" class="store-grid">
-            <!-- Dito kusang lilitaw ang mga paninda mula sa dashboard ni Nanay -->
-        </div>
+        <div id="storeGrid" class="store-grid"></div>
     </div>
 
     <script>
-        // Kunin ang mga produkto mula sa localStorage (shared sa pagitan ng dashboard at store view)
         let products = JSON.parse(localStorage.getItem('nanay_products')) || [
-            { name: "Bigas (per kilo)", category: "Grocery / Bigas", price: 55 },
-            { name: "Itlog (per piece)", category: "Grocery / Bigas", price: 8 },
-            { name: "Homemade Shanghai (12pcs)", category: "Frozen / Luto", price: 150 },
-            { name: "Hotdog (per pack)", category: "Frozen / Luto", price: 120 },
-            { name: "Homemade Bagoong (bottle)", category: "Condiments", price: 100 }
+            { name: "Bigas (per kilo)", category: "Grocery / Bigas", price: 55, stock: 50 },
+            { name: "Itlog (per piece)", category: "Grocery / Bigas", price: 8, stock: 100 },
+            { name: "Homemade Shanghai (12pcs)", category: "Frozen / Luto", price: 150, stock: 15 },
+            { name: "Hotdog (per pack)", category: "Frozen / Luto", price: 120, stock: 20 },
+            { name: "Homemade Bagoong (bottle)", category: "Condiments", price: 100, stock: 10 }
         ];
 
         let currentCategory = 'All';
@@ -181,11 +232,16 @@
             }
 
             filteredProducts.forEach(p => {
+                const isAvailable = p.stock > 0;
+                const stockText = isAvailable ? `✓ Available (${p.stock} pcs)` : `✗ Out of Stock`;
+                const stockClass = isAvailable ? `in-stock` : `out-stock`;
+
                 grid.innerHTML += `
                     <div class="product-card">
                         <div>
                             <span class="product-category">${p.category}</span>
                             <div class="product-name">${p.name}</div>
+                            <div class="stock-status ${stockClass}">${stockText}</div>
                         </div>
                         <div class="product-price">₱${p.price.toLocaleString()}</div>
                     </div>
@@ -200,7 +256,6 @@
             renderStore(category);
         }
 
-        // I-load ang mga produkto pagbukas ng pahina
         renderStore();
     </script>
 </body>
