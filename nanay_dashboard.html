@@ -440,6 +440,7 @@
                         <th>Qty</th>
                         <th>Buyer</th>
                         <th>Uri / Halaga</th>
+                        <th>Aksyon</th>
                     </tr>
                 </thead>
                 <tbody id="salesTableBody"></tbody>
@@ -589,6 +590,42 @@
             <div style="display: flex; gap: 10px; justify-content: flex-end;">
                 <button class="btn btn-secondary" onclick="closeEditModal()">Kanselahin</button>
                 <button class="btn" onclick="saveEditedProduct()">I-save ang Pagbabago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT SALES MODAL POPUP -->
+    <div id="editSalesModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>✏️ I-edit ang Rekord ng Benta</h3>
+            <input type="hidden" id="editSalesIndex">
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Pangalan ng Paninda</label>
+                <input type="text" id="modalSalesProdName" disabled style="background:#f3f4f6;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Bagong Qty <span class="required-star">*</span></label>
+                <input type="number" id="modalSalesQty" min="1">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Pangalan ng Buyer <span class="required-star">*</span></label>
+                <input type="text" id="modalSalesBuyer">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Mode of Payment <span class="required-star">*</span></label>
+                <select id="modalSalesPaymentMode">
+                    <option value="Cash/Digital">💵 Cash / Digital</option>
+                    <option value="Pautang">📝 Pautang (Utang)</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeEditSalesModal()">Kanselahin</button>
+                <button class="btn" onclick="saveEditedSale()">I-save ang Pagbabago</button>
             </div>
         </div>
     </div>
@@ -776,13 +813,12 @@
             const buyer = document.getElementById('salesBuyer').value.trim();
             const paymentMode = document.getElementById('salesPaymentMode').value;
 
-            // Strict Validation para matiyak na napunan ang lahat ng 4 fields
             if (prodIndex === "" || isNaN(prodIndex)) {
                 alert('⚠️ Mangyaring pumili ng Paninda.');
                 return;
             }
             if (isNaN(qty) || qty <= 0) {
-                alert('⚠️ Mangyaring maglagay ng Qty na mas mataas sa 0.');
+                alert('⚠️️ Mangyaring maglagay ng Qty na mas mataas sa 0.');
                 return;
             }
             if (!buyer) {
@@ -790,7 +826,7 @@
                 return;
             }
             if (paymentMode === "") {
-                alert('⚠️️ Mangyaring pumili ng Mode of Payment.');
+                alert('⚠ Mangyaring pumili ng Mode of Payment.');
                 return;
             }
 
@@ -804,13 +840,15 @@
             const total = prod.price * qty;
             const date = new Date().toLocaleString('en-PH', { dateStyle: 'short', timeStyle: 'short' });
 
-            if (paymentMode === 'Cash/Digital') {
-                sales.unshift({ date, name: prod.name, qty, buyer, total, type: 'Cash/Digital' });
-            } else {
-                utangs.unshift({ date, name: buyer, items: `${qty}x ${prod.name}`, amount: total, status: 'unpaid' });
-            }
+            sales.unshift({ 
+                date, 
+                prodName: prod.name, 
+                qty, 
+                buyer, 
+                total, 
+                type: 'Cash/Digital' 
+            });
             
-            // I-reset pabalik sa blangko/0 para mapilitang pumili ulit sa susunod
             document.getElementById('salesProdSelect').selectedIndex = 0;
             document.getElementById('salesQty').value = '0';
             document.getElementById('salesBuyer').value = '';
@@ -827,15 +865,34 @@
             let cashDirectTotal = 0;
             let paidUtangTotal = 0;
 
-            sales.forEach(s => {
+            sales.forEach((s, index) => {
                 cashDirectTotal += s.total;
-                tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.name}</td><td>${s.qty}</td><td>${s.buyer}</td><td><span class="badge" style="background:#e0f2fe; color:#0369a1;">Cash/Digital</span> <strong>₱${s.total}</strong></td></tr>`;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${s.date}</td>
+                        <td><strong>${s.prodName}</strong></td>
+                        <td>${s.qty}</td>
+                        <td>${s.buyer}</td>
+                        <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">Cash/Digital</span> <strong>₱${s.total}</strong></td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" onclick="openEditSalesModal(${index})">I-edit</button>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteSale(${index})">Burahin</button>
+                        </td>
+                    </tr>`;
             });
 
             utangs.forEach(u => {
                 if (u.status === 'paid') {
                     paidUtangTotal += u.amount;
-                    tbody.innerHTML += `<tr><td>${u.date}</td><td>${u.items} (Utang ni ${u.name})</td><td>-</td><td>${u.name}</td><td><span class="badge badge-paid">Bayad Utang</span> <strong>₱${u.amount}</strong></td></tr>`;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${u.date}</td>
+                            <td><strong>${u.items} (Utang ni ${u.name})</strong></td>
+                            <td>-</td>
+                            <td>${u.name}</td>
+                            <td><span class="badge badge-paid">Bayad Utang</span> <strong>₱${u.amount}</strong></td>
+                            <td>-</td>
+                        </tr>`;
                 }
             });
 
@@ -846,6 +903,79 @@
             document.getElementById('paidUtangSalesDisplay').innerText = `₱${paidUtangTotal.toLocaleString()}`;
 
             localStorage.setItem('nanay_sales', JSON.stringify(sales));
+        }
+
+        function openEditSalesModal(index) {
+            const s = sales[index];
+            document.getElementById('editSalesIndex').value = index;
+            document.getElementById('modalSalesProdName').value = s.prodName;
+            document.getElementById('modalSalesQty').value = s.qty;
+            document.getElementById('modalSalesBuyer').value = s.buyer;
+            document.getElementById('modalSalesPaymentMode').value = s.type;
+
+            document.getElementById('editSalesModal').style.display = 'flex';
+        }
+
+        function closeEditSalesModal() {
+            document.getElementById('editSalesModal').style.display = 'none';
+        }
+
+        function saveEditedSale() {
+            const index = document.getElementById('editSalesIndex').value;
+            const newQty = parseInt(document.getElementById('modalSalesQty').value);
+            const newBuyer = document.getElementById('modalSalesBuyer').value.trim();
+            const newPaymentMode = document.getElementById('modalSalesPaymentMode').value;
+
+            if (isNaN(newQty) || newQty <= 0) {
+                alert('⚠️ Maglagay ng tamang Qty na higit sa 0.');
+                return;
+            }
+            if (!newBuyer) {
+                alert('⚠️ Ilagay ang pangalan ng buyer.');
+                return;
+            }
+
+            const oldSale = sales[index];
+            const prod = products.find(p => p.name === oldSale.prodName);
+
+            if (prod) {
+                // Ibalik muna ang lumang qty sa stock
+                prod.stock += oldSale.qty;
+
+                // Suriin kung sapat ang stock para sa bagong qty
+                if (prod.stock < newQty) {
+                    alert('Oops! Kulang ang stock para sa binagong dami na ito.');
+                    prod.stock -= oldSale.qty; // Ibalik ang bawas sakaling mag-cancel
+                    return;
+                }
+
+                // Bawasan ulit ng bagong stock
+                prod.stock -= newQty;
+                oldSale.total = prod.price * newQty;
+            }
+
+            oldSale.qty = newQty;
+            oldSale.buyer = newBuyer;
+            oldSale.type = newPaymentMode;
+
+            closeEditSalesModal();
+            renderSales();
+            renderProducts();
+        }
+
+        function deleteSale(index) {
+            if (confirm("Sigurado ka bang gusto mong burahin ang bentang ito? Ibabalik ang stock nito sa paninda.")) {
+                const s = sales[index];
+                const prod = products.find(p => p.name === s.prodName);
+                
+                if (prod) {
+                    prod.stock += s.qty; // Ibalik ang stock
+                }
+
+                sales.splice(index, 1);
+                renderSales();
+                renderProducts();
+            }
         }
 
         function markUtangPaid(index) {
